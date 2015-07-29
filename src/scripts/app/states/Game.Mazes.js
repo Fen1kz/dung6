@@ -1,0 +1,53 @@
+import {Level} from 'app/states/mazes/level';
+//import {Wilson} from 'app/mazes/algs/wilson';
+import {Cell} from 'app/entities/level/cell';
+
+export default class Mazes extends Phaser.State {
+    preload() {
+      console.log('hi')
+    }
+
+    create() {
+        this.o_mcamera;
+
+        this.game.world.setBounds(0, 0, 900, 900);
+        this.game.stage.backgroundColor = 0xffffff;
+
+        this.game.camera.x = this.game.world.width * .5;
+        this.game.camera.y = this.game.world.height * .5;
+
+        this.level = new Level(this.game);
+        this.level.x = this.game.camera.x;
+        this.level.y = this.game.camera.y;
+        this.game.add.existing(this.level);
+        //this.level.generate(
+        //    new Wilson(this.game)
+        //);
+    }
+
+    update() {
+        this.move_camera_by_pointer(this.game.input.mousePointer);
+        this.move_camera_by_pointer(this.game.input.pointer1);
+    }
+
+    render() {
+        var pos = this.game.input.activePointer.position;
+        this.game.debug.text("x:" + pos.x + " y:" + pos.y, 180, 200);
+    }
+
+    move_camera_by_pointer(o_pointer) {
+        if (!o_pointer.timeDown) {
+            return;
+        }
+        if (o_pointer.isDown && !o_pointer.targetObject) {
+            if (this.o_mcamera) {
+                this.game.camera.x += this.o_mcamera.x - o_pointer.position.x;
+                this.game.camera.y += this.o_mcamera.y - o_pointer.position.y;
+            }
+            this.o_mcamera = o_pointer.position.clone();
+        }
+        if (o_pointer.isUp) {
+            this.o_mcamera = null;
+        }
+    }
+}

@@ -1,0 +1,15 @@
+.*
+*.log
+Thumbs.db
+.idea/
+
+dist
+build
+node_modules
+bower_components
+
+!.git*
+!.babelrc
+!.bowerrc
+!.jshintrc
+!.editorconfig

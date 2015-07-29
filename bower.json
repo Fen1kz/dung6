@@ -1,0 +1,15 @@
+{
+  "name": "dung-6",
+  "dependencies": {
+    "phaser": "~2.3.0",
+    "almond": "~0.3.0",
+    "bluebird": "~2.9.34",
+    "lodash": "~3.10.0"
+  },
+  "overrides": {
+    "phaser": {
+      "main": "build/custom/phaser-no-physics.js"
+    }
+  },
+  "private": true
+}
