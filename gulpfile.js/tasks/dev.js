@@ -13,6 +13,11 @@ module.exports = function (gulp, $, config) {
   var handleErrors   = require('../lib/handleErrors');
   var mainBowerFiles = require('main-bower-files');
   var amdOptimize = require("amd-optimize");
+  var debug = require('gulp-debug');
+
+  var transform = require('vinyl-transform');
+  var map = require('map-stream');
+  var path = require('path');
 
   var dirs    = config.dirs;
   var globs   = config.globs;
@@ -70,15 +75,31 @@ module.exports = function (gulp, $, config) {
       .pipe(browserSync.stream());
   });
 
+  var libsToFix = [
+    'bluebird', 'lodash'
+  ];
+
   // Concatenates Bower script libraries in a single file.
   gulp.task('dev:build:bundle', function () {
     var libs = [ 'node_modules/babel-core/browser-polyfill.js' ]
       .concat(mainBowerFiles());
 
+    var anonymousAMDFixer = transform(function(filename) {
+      var relativeFileName = path.basename(filename, '.js');
+      var toFix = (libsToFix.indexOf(relativeFileName) !== -1);
+      return map(function(chunk, next) {
+        if (toFix) {
+          console.log(relativeFileName, 'fixed', chunk.toString().match(/define\((?=[^'"])/g));
+          chunk = chunk.toString().replace(/define\((?=[^'"])/g, 'define(\''+relativeFileName+'\',');
+        }
+        return next(null, chunk)
+      })
+    });
+
     return gulp.src(libs)
       .pipe($.filter('**/*.js'))
       .pipe($.sourcemaps.init({ loadMaps: true }))
-      .pipe(amdOptimize("main"))
+      .pipe(anonymousAMDFixer)
       .pipe($.concat('bundle.js'))
       .pipe($.sourcemaps.write('.'))
       .pipe(gulp.dest(dirs['build']))

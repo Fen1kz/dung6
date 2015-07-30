@@ -10,15 +10,17 @@ export default class Mazes extends Phaser.State {
     create() {
         this.o_mcamera;
 
-        this.game.world.setBounds(0, 0, 900, 900);
+        this.game.world.setBounds(0, 0, 1200, 900);
         this.game.stage.backgroundColor = 0xffffff;
 
-        this.game.camera.x = this.game.world.width * .5;
-        this.game.camera.y = this.game.world.height * .5;
+        //console.log(this.game.camera);
+        this.game.camera.x = this.game.world.width * .5 - this.game.camera.screenView.width * .5;
+        this.game.camera.y = this.game.world.height * .5 - this.game.camera.screenView.width * .5;
 
         this.level = new Level(this.game);
-        this.level.x = this.game.camera.x;
-        this.level.y = this.game.camera.y;
+        this.level.x = this.game.world.width * .5;
+        this.level.y = this.game.world.height * .5;
+        //console.log(this.level);
         this.game.add.existing(this.level);
         //this.level.generate(
         //    new Wilson(this.game)
@@ -31,7 +33,8 @@ export default class Mazes extends Phaser.State {
     }
 
     render() {
-        var pos = this.game.input.activePointer.position;
+        //var pos = this.game.input.activePointer.position;
+        var pos = this.game.camera;
         this.game.debug.text("x:" + pos.x + " y:" + pos.y, 180, 200);
     }
 
