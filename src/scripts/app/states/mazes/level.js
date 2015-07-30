@@ -22,7 +22,7 @@ class Level extends Phaser.Sprite {
 
         let add = (cellCells, dir, another) => {
             if (another) {
-                cellCells.add(dir, another);
+                cellCells.put(dir, another);
             }
         };
 
@@ -33,7 +33,9 @@ class Level extends Phaser.Sprite {
             add(cell.cells, Dir.W, this.cells.get(cell.X - 1, cell.Y));
         });
 
-        console.log(this.cells);
+        this.cells.forEach((cell) => {
+          cell.show();
+        });
     }
 
     update() {

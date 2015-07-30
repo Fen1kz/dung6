@@ -15,7 +15,7 @@ class CompositeMap {
         return this.$map[this.key(key)];
     }
     forEach(cb, $this) {
-        _.forIn(this.map, cb, $this);
+        _.forIn(this.$map, cb, $this);
         return this;
     }
 }
