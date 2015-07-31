@@ -1,5 +1,5 @@
 import {Level} from 'app/states/mazes/level';
-//import {Wilson} from 'app/mazes/algs/wilson';
+import {Wilson} from 'app/states/mazes/generators/wilson';
 import {Cell} from 'app/entities/level/cell';
 
 export default class Mazes extends Phaser.State {
@@ -22,6 +22,21 @@ export default class Mazes extends Phaser.State {
         this.level.y = this.game.world.height * .5;
         //console.log(this.level);
         this.game.add.existing(this.level);
+
+        this.level.show()
+          .then(() => {
+            console.log('all done');
+            this.level.setGenerator(new Wilson());
+
+            setTimeout(() => {
+              this.level.generator.stop()
+            }, 2000);
+
+            return this.level.generator.start();
+          })
+          .then(() => {
+            console.log('generation stopped');
+          });
         //this.level.generate(
         //    new Wilson(this.game)
         //);

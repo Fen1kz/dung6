@@ -1,5 +1,7 @@
 'use strict';
 
+import Promise from 'bluebird';
+
 import {Cell} from 'app/entities/level/cell';
 import {Directions as Dir} from 'app/entities/level/directions';
 import {CompositeMap} from 'app/util/composite-map';
@@ -32,18 +34,25 @@ class Level extends Phaser.Sprite {
             add(cell.cells, Dir.S, this.cells.get(cell.X, cell.Y + 1));
             add(cell.cells, Dir.W, this.cells.get(cell.X - 1, cell.Y));
         });
+    }
 
-        this.cells.forEach((cell) => {
-          cell.show();
-        });
+    show() {
+      let promise = [];
+      this.cells.forEach((cell) => {
+        promise.push(cell.show());
+      });
+      return Promise.all(promise);
+    }
+
+    setGenerator(generator) {
+      this.generator = generator;
+      this.generator.game = this.game;
+      this.generator.level = this;
+      //return this.generator.start();
     }
 
     update() {
         //console.log('d');
-    }
-
-    render() {
-        console.log('sasdr');
     }
 }
 
@@ -53,12 +62,12 @@ class CellList extends CompositeMap {
     }
 
     add(cell) {
-        this[this.key(cell.X, cell.Y)] = cell;
-        return super.put(this.key(cell.X, cell.Y), cell);
+      this.$map[this.key(cell.X, cell.Y)] = cell;
+      return this;
     }
 
     get(X, Y) {
-        return super.get(this.key(X, Y));
+      return this.$map[this.key(X, Y)];
     }
 }
 

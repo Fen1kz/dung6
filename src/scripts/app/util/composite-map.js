@@ -5,7 +5,7 @@ class CompositeMap {
         this.$map = {};
     }
     key(key) {
-        return key.toString();
+        return key ? key.toString() : void 0;
     }
     put(key, value) {
         this.$map[this.key(key)] = value;
@@ -17,6 +17,18 @@ class CompositeMap {
     forEach(cb, $this) {
         _.forIn(this.$map, cb, $this);
         return this;
+    }
+
+    clone() {
+      return _.cloneDeep(this);
+    }
+
+    toArray() {
+      return _.values(this.$map);
+    }
+
+    get length() {
+      return _.keys(this.$map).length;
     }
 }
 
