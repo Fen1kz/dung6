@@ -10,14 +10,25 @@ class Level extends Phaser.Sprite {
     constructor(game, x, y, key, frame) {
         super(game, x, y, key, frame);
 
+        this.SIZE = 50;
+        this.WIDTH = Math.floor(this.game.world.width / this.SIZE);
+        this.HEIGHT = Math.floor(this.game.world.height / this.SIZE);
+        this.WIDTH = 2;
+        this.HEIGHT = 2;
+
+        this.game.add.existing(this);
         this.anchor.setTo(0.5, 0.5);
-        this.SIZE = 40;
-        this.WIDTH = Math.floor(this.game.width / this.SIZE);
-        this.HEIGHT = Math.floor(this.game.height / this.SIZE);
+        //this.x = this.game.world.width / 2;
+        //this.y = this.game.world.height / 2;
+
+        this.graphics = this.game.add.graphics();
+        this.addChild(this.graphics);
+
+        console.log(this.x, this.y);
 
         this.cells = new CellList();
-        for (let X = -Math.floor(this.WIDTH * .5); X < Math.ceil(this.WIDTH * .5); ++X) {
-            for (let Y = -Math.floor(this.HEIGHT * .5); Y < Math.ceil(this.HEIGHT * .5); ++Y) {
+        for (let X = -Math.floor(this.WIDTH / 2); X < Math.ceil(this.WIDTH / 2); ++X) {
+            for (let Y = -Math.floor(this.HEIGHT / 2); Y < Math.ceil(this.HEIGHT / 2); ++Y) {
                 this.cells.add(new Cell(this, X, Y));
             }
         }
@@ -36,7 +47,22 @@ class Level extends Phaser.Sprite {
         });
     }
 
+    draw() {
+      //this.graphics.clear();
+      ////this.graphics.lineStyle(2, 0xdddddd);
+      //this.graphics.beginFill(0xcccccc);
+      //this.graphics.drawRect(this.SIZE * -.5, this.SIZE * -.5, this.SIZE, this.SIZE);
+      //this.graphics.beginFill(0xff0000);
+      //this.graphics.drawRect(0,0,5,5);
+      //
+      //this.graphics.beginFill(0xff0000);
+      //this.graphics.drawRect(-150,-150,5,5);
+      ////this.graphics.drawRect(0, 0, this.width, this.height);
+      //this.graphics.endFill();
+    }
+
     show() {
+      //this.draw();
       let promise = [];
       this.cells.forEach((cell) => {
         promise.push(cell.show());

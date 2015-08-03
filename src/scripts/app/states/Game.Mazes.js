@@ -10,18 +10,20 @@ export default class Mazes extends Phaser.State {
     create() {
         this.o_mcamera;
 
-        this.game.world.setBounds(0, 0, 1200, 900);
-        this.game.stage.backgroundColor = 0xffffff;
+        this.game.world.setBounds(-150, -150, 300, 300);
+        this.game.stage.backgroundColor = 0xfefefe;
 
         //console.log(this.game.camera);
-        this.game.camera.x = this.game.world.width * .5 - this.game.camera.screenView.width * .5;
-        this.game.camera.y = this.game.world.height * .5 - this.game.camera.screenView.width * .5;
+        console.log(`this.camera.x (${this.game.camera.x}) = this.game.world.width / 2 (${this.game.world.width / 2}) - this.game.camera.screenView.width / 2 (${this.game.camera.screenView.width / 2})`)
+        console.log(`this.game.world.width / 2 - this.game.camera.screenView.width / 2 (${this.game.world.width / 2 - this.game.camera.screenView.width / 2})`)
+        //this.game.camera.x = this.game.world.width / 2 - this.game.camera.screenView.width / 2;
+        //this.game.camera.y = this.game.world.height / 2 - this.game.camera.screenView.height / 2;
+        //this.game.camera.x = 50;
+        //this.game.camera.y = 0;
+        console.log(this.game.camera.x, this.game.camera.y)
 
         this.level = new Level(this.game);
-        this.level.x = this.game.world.width * .5;
-        this.level.y = this.game.world.height * .5;
-        //console.log(this.level);
-        this.game.add.existing(this.level);
+        ////console.log(this.level.x, this.level.y);
 
         this.level.show()
           .then(() => {
@@ -37,35 +39,50 @@ export default class Mazes extends Phaser.State {
           .then(() => {
             console.log('generation stopped');
           });
-        //this.level.generate(
-        //    new Wilson(this.game)
-        //);
+
+      this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN)
+        .onDown.add(() => {
+          this.game.camera.y -= 50;
+          console.log(this.game.camera.x, this.game.camera.y)
+        });
+      this.game.input.keyboard.addKey(Phaser.Keyboard.UP)
+        .onDown.add(() => {this.game.camera.y += 50
+          console.log(this.game.camera.x, this.game.camera.y)
+        });
+      this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT)
+        .onDown.add(() => {this.game.camera.x -= 50
+          console.log(this.game.camera.x, this.game.camera.y)
+        });
+      this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT)
+        .onDown.add(() => {this.game.camera.x += 50
+          console.log(this.game.camera.x, this.game.camera.y)
+        });
     }
 
-    update() {
-        this.move_camera_by_pointer(this.game.input.mousePointer);
-        this.move_camera_by_pointer(this.game.input.pointer1);
-    }
-
-    render() {
-        //var pos = this.game.input.activePointer.position;
-        var pos = this.game.camera;
-        this.game.debug.text("x:" + pos.x + " y:" + pos.y, 180, 200);
-    }
-
-    move_camera_by_pointer(o_pointer) {
-        if (!o_pointer.timeDown) {
-            return;
-        }
-        if (o_pointer.isDown && !o_pointer.targetObject) {
-            if (this.o_mcamera) {
-                this.game.camera.x += this.o_mcamera.x - o_pointer.position.x;
-                this.game.camera.y += this.o_mcamera.y - o_pointer.position.y;
-            }
-            this.o_mcamera = o_pointer.position.clone();
-        }
-        if (o_pointer.isUp) {
-            this.o_mcamera = null;
-        }
-    }
+    //update() {
+    //    this.move_camera_by_pointer(this.game.input.mousePointer);
+    //    this.move_camera_by_pointer(this.game.input.pointer1);
+    //}
+    //
+    //render() {
+    //    //var pos = this.game.input.activePointer.position;
+    //    var pos = this.game.camera;
+    //    this.game.debug.text("x:" + pos.x + " y:" + pos.y, 180, 200);
+    //}
+    //
+    //move_camera_by_pointer(o_pointer) {
+    //    if (!o_pointer.timeDown) {
+    //        return;
+    //    }
+    //    if (o_pointer.isDown && !o_pointer.targetObject) {
+    //        if (this.o_mcamera) {
+    //            this.game.camera.x += this.o_mcamera.x - o_pointer.position.x;
+    //            this.game.camera.y += this.o_mcamera.y - o_pointer.position.y;
+    //        }
+    //        this.o_mcamera = o_pointer.position.clone();
+    //    }
+    //    if (o_pointer.isUp) {
+    //        this.o_mcamera = null;
+    //    }
+    //}
 }

@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import {Generator} from 'app/states/mazes/generators/generator'
 import {CellState} from 'app/entities/level/cell'
+import {Border} from 'app/entities/level/border'
 import {Direction} from 'app/entities/level/directions'
 
 class Wilson extends Generator {
@@ -21,7 +22,7 @@ class Wilson extends Generator {
       }
     }
 
-    this.SPEED = 50;
+    this.SPEED = 0;
     this.INITIAL_WALK_FACTOR = 20;
     this.cells = [];
     this.path = [];
@@ -29,6 +30,17 @@ class Wilson extends Generator {
 
   start() {
     this.cells = this.level.cells.toArray();
+
+    console.log(this.level.cells.$map);
+    let cell1 = this.level.cells.get(-1, -1);
+    let cell2 = this.level.cells.get(-1, 0);
+    let cell3 = this.level.cells.get(0, -1);
+    let cell4 = this.level.cells.get(0, 0);
+
+    new Border(cell2, cell4);
+    //new Border(cell2, cell3);
+    //new Border(cell1, cell3);
+
 
     let target = this.firstFn(this.cells);
 
@@ -43,8 +55,6 @@ class Wilson extends Generator {
       .then(() => {
         this.loop(() => {
           return this.walkToTarget()
-            .tap(() => {
-            })
             .then(() => {
               return {
                 result: this.cells.length < 1
@@ -101,11 +111,15 @@ class Wilson extends Generator {
 
   $walkToTarget() {
     let next = this.firstFn(this.cells);
-    next.setState(CellState.mark);
+    if (next) {
+      next.setState(CellState.mark);
 
-    this.path = [next];
+      this.path = [next];
 
-    return this.loop(this.walk, [next]);
+      return this.loop(this.walk, [next]);
+    } else {
+      return true;
+    }
   }
 
 
@@ -128,35 +142,19 @@ class Wilson extends Generator {
       let next = cell.cells.get(cell.direction);
 
       let directions = cell.directions();
-      let antiDirections =
-        [cell.directionTo(prev), cell.directionTo(next)]
-          .filter(ad => ad !== void 0);
-
-      antiDirections.forEach(ad => {
-        _.remove(directions, (d) => d === ad);
-        //if (cell.cell(ad) && cell.$borders[ad]) {
-        //  cell.$borders[ad].remove();
-        //}
-      });
-
-      //directions.map((d) => {
-      //  let b;
-      //  switch (d.str) {
-      //    case 'N':
-      //      b = new Border(this.game, cell.X, cell.Y, true);
-      //      break;
-      //    case 'S':
-      //      b = new Border(this.game, cell.X, cell.Y + 1, true);
-      //      break;
-      //    case 'W':
-      //      b = new Border(this.game, cell.X, cell.Y, false);
-      //      break;
-      //    case 'E':
-      //      b = new Border(this.game, cell.X + 1, cell.Y, false);
-      //      break;
+      //let antiDirections =
+      //  [cell.directionTo(prev), cell.directionTo(next)]
+      //    .filter(ad => ad !== void 0);
+      //
+      //antiDirections.forEach(ad => {
+      //  _.remove(directions, (d) => d === ad);
+      //  if (cell.cells.get(ad) && cell.borders.get(ad)) {
+      //    cell.borders.get(ad).remove();
       //  }
-      //  cell.setBorder(d, b);
-      //  cell.cell(d).setBorder(d.opposite(), b);
+      //});
+      //
+      //directions.map((d) => {
+      //  let b = new Border(cell, cell.cells.get(d));
       //});
 
       _.remove(this.cells, (c) => c === cell);

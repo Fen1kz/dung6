@@ -11,7 +11,7 @@ import Mazes from './app/states/Game.Mazes';
 
 
 export default function () {
-  let game = new Phaser.Game(600, 600, Phaser.AUTO);
+  let game = new Phaser.Game(300, 300, Phaser.AUTO);
 
   console.log(states);
   console.log(Mazes);
