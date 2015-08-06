@@ -22,7 +22,10 @@ export default function () {
 
   game.state.start('Boot');
 
-  game.event
+
+  //game.events.add('test', () => {
+  //  console.log('test');
+  //});
 
   return game;
 }

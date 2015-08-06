@@ -21,34 +21,47 @@ class Wilson extends Generator {
         return cells.shift();
       }
     }
-
-    this.SPEED = 0;
     this.INITIAL_WALK_FACTOR = 20;
     this.cells = [];
     this.path = [];
   }
 
   start() {
+    super.start();
     this.cells = this.level.cells.toArray();
 
-    let target = this.firstFn(this.cells);
+    let target = this.firstFn(this.cells)
+      .setState('mark');
 
     this.path = [target];
 
-    return this.loop(this.walk, [target], Math.floor(this.cells.length / this.INITIAL_WALK_FACTOR))
-      .then(() => {
-        this.makeCellsPlaced();
-      })
-      .then(() => {
-        this.loop(() => {
-          return this.walkToTarget()
+    return this.loop(this.walk, [target], Math.max(2, Math.floor(this.cells.length / this.INITIAL_WALK_FACTOR)))
+      .then(() => this.makeCellsPlaced())
+      .then(() =>
+        this.loop(() =>
+          this.walkToTarget()
             .then(() => {
               return {
                 result: this.cells.length < 1
-              }
-            })
-        });
+              };
+            })))
+      .then(() => {
+        this.stopped();
       });
+    //return this.loop(this.walk, [target], Math.floor(this.cells.length / this.INITIAL_WALK_FACTOR))
+    //  .then(() => {
+    //    return this.makeCellsPlaced();
+    //  })
+    //  .then(() => {
+    //    return this.loop(() => {
+    //      return this.walkToTarget()
+    //        .then(() => {
+    //          return {
+    //            result: this.cells.length < 1
+    //          }
+    //        })
+    //    });
+    //  });
   }
 
   $walk(next, direction) {
@@ -65,7 +78,6 @@ class Wilson extends Generator {
     // get new direction
     direction = _.sample(directions);
 
-    debugger;
     next.direction = direction;
     next.draw();
     //console.log(next.X, next.Y, 'going to', direction);
@@ -88,7 +100,7 @@ class Wilson extends Generator {
     }
 
     if (next.direction) delete next.direction;
-    next.setState(CellState.walk);
+    next.setState('walk');
     this.path.push(next);
 
     return {
@@ -100,7 +112,7 @@ class Wilson extends Generator {
   $walkToTarget() {
     let next = this.firstFn(this.cells);
     if (next) {
-      next.setState(CellState.mark);
+      next.setState('mark');
 
       this.path = [next];
 
@@ -114,22 +126,20 @@ class Wilson extends Generator {
   eraseWalk(next) {
     while (this.path.length) {
       let cell = this.path.pop();
-      cell.setState(CellState.erased);
+      cell.setState('erased');
       if (cell === next) {
-        cell.setState(CellState.walk);
+        cell.setState('walk');
         this.path.push(next);
         return;
       }
     }
   }
 
-  makeCellsPlaced () {
+  makeCellsPlaced() {
     for (let i = 0; i < this.path.length; ++i) {
       let prev = (i > 0) ? this.path[i - 1] : void 0;
       let cell = this.path[i];
       let next = cell.cells.get(cell.direction);
-
-      debugger;
 
       let directions = cell.directions();
       let antiDirections =
@@ -144,12 +154,13 @@ class Wilson extends Generator {
       });
 
       directions.map((d) => {
-        let b = new Border(cell, cell.cells.get(d));
+        if (!cell.borders.get(d))
+          new Border(cell, cell.cells.get(d));
       });
 
       _.remove(this.cells, (c) => c === cell);
       cell.direction = void 0;
-      cell.setState(CellState.placed);
+      cell.setState('placed');
 
       //this.game.draw();
       //debugger;

@@ -13,8 +13,10 @@ class Level extends Phaser.Sprite {
         this.SIZE = 20;
         this.WIDTH = Math.floor(this.game.world.width / this.SIZE);
         this.HEIGHT = Math.floor(this.game.world.height / this.SIZE);
-        //this.WIDTH = 5;
-        //this.HEIGHT = 5;
+        //this.WIDTH = 2;
+        //this.HEIGHT = 2;
+        this.WIDTH = 15;
+        this.HEIGHT = 15;
 
         this.game.add.existing(this);
         this.anchor.setTo(0.5, 0.5);
@@ -24,8 +26,7 @@ class Level extends Phaser.Sprite {
         this.graphics = this.game.add.graphics();
         this.addChild(this.graphics);
 
-        console.log(this.x, this.y);
-
+        this.borders = [];
         this.cells = new CellList();
         for (let X = -Math.floor(this.WIDTH / 2); X < Math.ceil(this.WIDTH / 2); ++X) {
             for (let Y = -Math.floor(this.HEIGHT / 2); Y < Math.ceil(this.HEIGHT / 2); ++Y) {
@@ -45,6 +46,14 @@ class Level extends Phaser.Sprite {
             add(cell.cells, Dir.S, this.cells.get(cell.X, cell.Y + 1));
             add(cell.cells, Dir.W, this.cells.get(cell.X - 1, cell.Y));
         });
+    }
+
+    clear() {
+      this.cells.forEach((cell) => {
+        cell.borders.forEach((b) => {b.destroy()});
+        cell.setState();
+        cell.direction = void 0;
+      });
     }
 
     draw() {
@@ -71,9 +80,11 @@ class Level extends Phaser.Sprite {
     }
 
     setGenerator(generator) {
+      if (this.generator) this.generator.destroy();
       this.generator = generator;
       this.generator.game = this.game;
       this.generator.level = this;
+      this.generator.activate();
       //return this.generator.start();
     }
 

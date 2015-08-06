@@ -7,7 +7,8 @@ class CompositeMap {
     key(key) {
         return key ? key.toString() : void 0;
     }
-    put(key, value) {
+    put(key, value, override = true) {
+        if (!override && this.key(key) in this.$map) throw `CompositeMap.put(${key}, ${value}, false)`;
         this.$map[this.key(key)] = value;
         return this;
     }

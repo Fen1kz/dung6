@@ -68,6 +68,7 @@ class Cell extends Phaser.Sprite {
     this.graphics.drawRect(this.level.SIZE * -.5, this.level.SIZE * -.5, this.level.SIZE, this.level.SIZE);
     //this.graphics.drawRect(0, 0, this.width, this.height);
     this.graphics.endFill();
+    return this;
   }
 
   show() {
@@ -112,8 +113,9 @@ class Cell extends Phaser.Sprite {
   }
 
   setState(state) {
-    this.state = state;
+    this.state = CellState[state];
     this.draw();
+    return this;
   }
 
   render() {
@@ -122,7 +124,7 @@ class Cell extends Phaser.Sprite {
 }
 
 let CellState = {
-  unknown: {
+  undefined: {
     color: 0xcccccc
   }
   , placed: {

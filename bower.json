@@ -4,7 +4,8 @@
     "phaser": "~2.3.0",
     "almond": "~0.3.0",
     "bluebird": "~2.9.34",
-    "lodash": "~3.10.0"
+    "lodash": "~3.10.0",
+    "jquery": "~2.1.4"
   },
   "overrides": {
     "phaser": {

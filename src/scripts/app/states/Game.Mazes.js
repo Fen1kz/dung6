@@ -27,13 +27,8 @@ export default class Mazes extends Phaser.State {
 
         this.level.show()
           .then(() => {
-            console.log('all done');
+            console.log('level show');
             this.level.setGenerator(new Wilson());
-
-            setTimeout(() => {
-              this.level.generator.stop()
-            }, 2000);
-
             return this.level.generator.start();
           })
           .then(() => {
