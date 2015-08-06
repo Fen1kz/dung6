@@ -31,22 +31,9 @@ class Wilson extends Generator {
   start() {
     this.cells = this.level.cells.toArray();
 
-    console.log(this.level.cells.$map);
-    let cell1 = this.level.cells.get(-1, -1);
-    let cell2 = this.level.cells.get(-1, 0);
-    let cell3 = this.level.cells.get(0, -1);
-    let cell4 = this.level.cells.get(0, 0);
-
-    new Border(cell2, cell4);
-    //new Border(cell2, cell3);
-    //new Border(cell1, cell3);
-
-
     let target = this.firstFn(this.cells);
 
     this.path = [target];
-
-    this.makeCellsPlaced();
 
     return this.loop(this.walk, [target], Math.floor(this.cells.length / this.INITIAL_WALK_FACTOR))
       .then(() => {
@@ -78,6 +65,7 @@ class Wilson extends Generator {
     // get new direction
     direction = _.sample(directions);
 
+    debugger;
     next.direction = direction;
     next.draw();
     //console.log(next.X, next.Y, 'going to', direction);
@@ -141,21 +129,23 @@ class Wilson extends Generator {
       let cell = this.path[i];
       let next = cell.cells.get(cell.direction);
 
+      debugger;
+
       let directions = cell.directions();
-      //let antiDirections =
-      //  [cell.directionTo(prev), cell.directionTo(next)]
-      //    .filter(ad => ad !== void 0);
-      //
-      //antiDirections.forEach(ad => {
-      //  _.remove(directions, (d) => d === ad);
-      //  if (cell.cells.get(ad) && cell.borders.get(ad)) {
-      //    cell.borders.get(ad).remove();
-      //  }
-      //});
-      //
-      //directions.map((d) => {
-      //  let b = new Border(cell, cell.cells.get(d));
-      //});
+      let antiDirections =
+        [cell.directionTo(prev), cell.directionTo(next)]
+          .filter(ad => ad !== void 0);
+
+      antiDirections.forEach(ad => {
+        _.remove(directions, (d) => d === ad);
+        if (cell.cells.get(ad) && cell.borders.get(ad)) {
+          cell.borders.get(ad).destroy();
+        }
+      });
+
+      directions.map((d) => {
+        let b = new Border(cell, cell.cells.get(d));
+      });
 
       _.remove(this.cells, (c) => c === cell);
       cell.direction = void 0;

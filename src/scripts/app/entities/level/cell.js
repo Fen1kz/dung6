@@ -33,14 +33,14 @@ class Cell extends Phaser.Sprite {
     this.alpha = 0;
     this.visible = false;
 
-    this.events.onInputDown.add(() => {
-      //console.log(this.hide())
-      this.hide()
-        .delay(1000)
-        .then(() => {
-          return this.show();
-        });
-    });
+    //this.events.onInputDown.add(() => {
+    //  //console.log(this.hide())
+    //  this.hide()
+    //    .delay(1000)
+    //    .then(() => {
+    //      return this.show();
+    //    });
+    //});
   }
 
   draw() {
@@ -72,7 +72,7 @@ class Cell extends Phaser.Sprite {
 
   show() {
     this.visible = true;
-    this.inputEnabled = true;
+    //this.inputEnabled = true;
     let showAlpha = this.game.add.tween(this).to({alpha: 1}, SHOW_ALPHA_SPEED, Phaser.Easing.Quadratic.In, true);
     let showScale = this.game.add.tween(this.scale).to({x: 1, y: 1}, SHOW_SCALE_SPEED, Phaser.Easing.Elastic.InOut);
     return new Promise((resolve) => {
@@ -105,7 +105,7 @@ class Cell extends Phaser.Sprite {
 
   directionTo(cell) {
     let direction;
-    _.forIn(this.cells, (c, d) => {
+    this.cells.forEach((c, d) => {
       if (c === cell) direction = d;
     });
     return Direction.fromString(direction);

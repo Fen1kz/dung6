@@ -10,7 +10,7 @@ export default class Mazes extends Phaser.State {
     create() {
         this.o_mcamera;
 
-        this.game.world.setBounds(-150, -150, 300, 300);
+        this.game.world.setBounds(-200, -200, 400, 400);
         this.game.stage.backgroundColor = 0xfefefe;
 
         //console.log(this.game.camera);
@@ -59,30 +59,30 @@ export default class Mazes extends Phaser.State {
         });
     }
 
-    //update() {
-    //    this.move_camera_by_pointer(this.game.input.mousePointer);
-    //    this.move_camera_by_pointer(this.game.input.pointer1);
-    //}
-    //
-    //render() {
-    //    //var pos = this.game.input.activePointer.position;
-    //    var pos = this.game.camera;
-    //    this.game.debug.text("x:" + pos.x + " y:" + pos.y, 180, 200);
-    //}
-    //
-    //move_camera_by_pointer(o_pointer) {
-    //    if (!o_pointer.timeDown) {
-    //        return;
-    //    }
-    //    if (o_pointer.isDown && !o_pointer.targetObject) {
-    //        if (this.o_mcamera) {
-    //            this.game.camera.x += this.o_mcamera.x - o_pointer.position.x;
-    //            this.game.camera.y += this.o_mcamera.y - o_pointer.position.y;
-    //        }
-    //        this.o_mcamera = o_pointer.position.clone();
-    //    }
-    //    if (o_pointer.isUp) {
-    //        this.o_mcamera = null;
-    //    }
-    //}
+    update() {
+        this.move_camera_by_pointer(this.game.input.mousePointer);
+        this.move_camera_by_pointer(this.game.input.pointer1);
+    }
+
+    render() {
+        //var pos = this.game.input.activePointer.position;
+        var pos = this.game.camera;
+        this.game.debug.text("x:" + pos.x + " y:" + pos.y, 180, 200);
+    }
+
+    move_camera_by_pointer(o_pointer) {
+        if (!o_pointer.timeDown) {
+            return;
+        }
+        if (o_pointer.isDown && !o_pointer.targetObject) {
+            if (this.o_mcamera) {
+                this.game.camera.x += this.o_mcamera.x - o_pointer.position.x;
+                this.game.camera.y += this.o_mcamera.y - o_pointer.position.y;
+            }
+            this.o_mcamera = o_pointer.position.clone();
+        }
+        if (o_pointer.isUp) {
+            this.o_mcamera = null;
+        }
+    }
 }

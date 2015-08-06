@@ -13,9 +13,6 @@ import Mazes from './app/states/Game.Mazes';
 export default function () {
   let game = new Phaser.Game(300, 300, Phaser.AUTO);
 
-  console.log(states);
-  console.log(Mazes);
-
   // Dynamically add all required game states.
   Object.keys(states)
     .map((key) => [ key, states[key] ])
@@ -24,6 +21,8 @@ export default function () {
   game.state.add('Mazes', Mazes);
 
   game.state.start('Boot');
+
+  game.event
 
   return game;
 }
