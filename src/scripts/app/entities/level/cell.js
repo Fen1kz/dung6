@@ -2,6 +2,7 @@
 
 import {Direction} from 'app/entities/level/directions';
 import {CompositeMap} from 'app/util/composite-map';
+import {Entity} from 'app/entities/entity';
 import Promise from 'bluebird';
 
 //const SHOW_ALPHA_SPEED = 500;
@@ -9,24 +10,13 @@ import Promise from 'bluebird';
 const SHOW_ALPHA_SPEED = 500;
 const SHOW_SCALE_SPEED = 500;
 
-class Cell extends Phaser.Sprite {
+class Cell extends Entity {
   constructor(level, X, Y) {
-    super(level.game);
-
-    this.level = level;
-    this.level.addChild(this);
-    this.X = X;
-    this.Y = Y;
+    super(level, X, Y);
 
     this.cells = new CompositeMap();
     this.borders = new CompositeMap();
 
-    this.anchor.setTo(0.5, 0.5);
-    this.x = this.level.SIZE / 2 + this.X * this.level.SIZE;
-    this.y = this.level.SIZE / 2 + this.Y * this.level.SIZE;
-
-    this.graphics = this.game.add.graphics();
-    this.addChild(this.graphics);
     this.setState(CellState.unknown);
 
     this.scale.setTo(.5, .5);
@@ -60,12 +50,12 @@ class Cell extends Phaser.Sprite {
       this.text.anchor.set(0.5);
     }
 
-
-    this.graphics.clear();
+    super.draw();
     this.graphics.lineStyle(2, 0xaaaaaa);
     //this.graphics.lineStyle(2, 0xdddddd);
     this.graphics.beginFill(this.state.color);
-    this.graphics.drawRect(this.level.SIZE * -.5, this.level.SIZE * -.5, this.level.SIZE, this.level.SIZE);
+    //this.graphics.drawRect(this.level.SIZE * -.5, this.level.SIZE * -.5, this.level.SIZE, this.level.SIZE);
+    this.graphics.drawRect(this.level.SIZE * -1, this.level.SIZE * -1, this.level.SIZE, this.level.SIZE);
     //this.graphics.drawRect(0, 0, this.width, this.height);
     this.graphics.endFill();
     return this;

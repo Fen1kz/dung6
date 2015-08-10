@@ -2,7 +2,7 @@ class Border extends Phaser.Sprite {
   constructor(cell1, cell2) {
     super(cell1.game);
 
-    if (!cell1.cells.find(cell2)) {
+    if (!cell1.cells.findKey(cell2)) {
       throw "Border Error"
     }
 
@@ -37,12 +37,20 @@ class Border extends Phaser.Sprite {
     this.graphics.lineStyle(4, 0x0);
 
     if (this.horizontal) {
-      this.graphics.moveTo(-this.level.SIZE / 2, 0);
-      this.graphics.lineTo(+this.level.SIZE / 2, 0);
+      this.graphics.moveTo(-this.level.SIZE, -this.level.SIZE / 2);
+      this.graphics.lineTo(0, -this.level.SIZE / 2);
     } else {
-      this.graphics.moveTo(0, -this.level.SIZE / 2);
-      this.graphics.lineTo(0, +this.level.SIZE / 2);
+      this.graphics.moveTo(-this.level.SIZE / 2, -this.level.SIZE);
+      this.graphics.lineTo(-this.level.SIZE / 2, 0);
     }
+
+    //if (this.horizontal) {
+    //  this.graphics.moveTo(-this.level.SIZE / 2, 0);
+    //  this.graphics.lineTo(+this.level.SIZE / 2, 0);
+    //} else {
+    //  this.graphics.moveTo(0, -this.level.SIZE / 2);
+    //  this.graphics.lineTo(0, +this.level.SIZE / 2);
+    //}
   }
 
   destroy() {

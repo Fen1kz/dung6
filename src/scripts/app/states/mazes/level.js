@@ -20,8 +20,8 @@ class Level extends Phaser.Sprite {
 
         this.game.add.existing(this);
         this.anchor.setTo(0.5, 0.5);
-        //this.x = this.game.world.width / 2;
-        //this.y = this.game.world.height / 2;
+        this.x = this.game.world.width / 2;
+        this.y = this.game.world.height / 2;
 
         this.graphics = this.game.add.graphics();
         this.addChild(this.graphics);

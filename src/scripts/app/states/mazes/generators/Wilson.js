@@ -76,7 +76,8 @@ class Wilson extends Generator {
     //console.log('post-filter', directions);
 
     // get new direction
-    direction = _.sample(directions);
+    //direction = _.sample(directions);
+    direction = directions[Math.floor(Math.random() * directions.length)];
 
     next.direction = direction;
     next.draw();

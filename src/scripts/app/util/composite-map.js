@@ -26,11 +26,8 @@ class CompositeMap {
         return this;
     }
 
-    find(x) {
-      return _.find(_.values(this.$map, x));
-    }
     findKey(x) {
-      return _.findKey(_.values(this.$map, x));
+      return _.findKey(this.$map, x);
     }
 
     clone() {

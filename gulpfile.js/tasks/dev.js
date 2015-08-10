@@ -76,7 +76,7 @@ module.exports = function (gulp, $, config) {
   });
 
   var libsToFix = [
-    'bluebird', 'lodash'
+    'bluebird', 'lodash', 'seedrandom'
   ];
 
   // Concatenates Bower script libraries in a single file.

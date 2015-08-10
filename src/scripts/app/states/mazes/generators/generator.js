@@ -1,5 +1,9 @@
 'use strict';
 
+import Promise from 'bluebird';
+
+import seedrandom from 'seedrandom';
+
 class Generator {
   constructor() {
     this.SPEED = 0;
@@ -10,6 +14,7 @@ class Generator {
   }
 
   on() {
+    seedrandom(this.game.seed, { global: true });
     $('#control')
       .text('Start')
       .off('click.stop')
@@ -35,10 +40,6 @@ class Generator {
     this.stopFlag = true;
   }
 
-  off() {
-
-  }
-
   stopped() {
     this.stopFlag = false;
     this.on();
@@ -46,7 +47,12 @@ class Generator {
 
   loop(fn, args, number = 0) {
     return fn.apply(this, args)
-      .delay(this.SPEED)
+      .then((x) => {
+        return (this.SPEED == 0
+          ? Promise.resolve(x)
+          : Promise.resolve(x).delay(this.SPEED)
+        );
+      })
       //.tap((data) => {debugger;})
       .then((retObject) => {
         if (retObject.result === false
