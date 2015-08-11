@@ -10,7 +10,7 @@ class Direction {
     }
 
     toString() {
-        return `${this.str}:${this.arrow}}`;
+        return `${this.str}:${this.arrow}`;
     }
 }
 

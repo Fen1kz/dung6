@@ -1,66 +1,87 @@
 'use strict';
+import _ from 'lodash';
 import {Entity} from 'app/entities/entity';
+import {Directions as d} from 'app/entities/level/directions';
 
 class Player extends Entity {
   constructor(level, X, Y) {
     super(level, X, Y);
-    this.setupControls();
+    this.setControls();
     this.draw();
   }
 
-  setupControls() {
-    //this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN)
-    //  .isDown.add(() => {
-    //    console.log('down');
-    //  });
-    //this.game.input.keyboard.addKey(Phaser.Keyboard.UP)
-    //  .onDown.add(() => {this.game.camera.y -= 50;
-    //    console.log(this.game.camera.x, this.game.camera.y)
-    //  });
-    //this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT)
-    //  .onDown.add(() => {this.game.camera.x -= 50;
-    //    console.log(this.game.camera.x, this.game.camera.y)
-    //  });
-    //this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT)
-    //  .onDown.add(() => {this.game.camera.x += 50;
-    //    console.log(this.game.camera.x, this.game.camera.y)
-    //  });
+  movementMap() {
+    return [{
+      key: Phaser.Keyboard.UP
+      , direction: d.N
+      , xy: (o, x, y, v) => {
+        o[y] -= v;
+        return o;
+      }
+    }, {
+      key: Phaser.Keyboard.RIGHT
+      , direction: d.E
+      , xy: (o, x, y, v) => {
+        o[x] += v;
+        return o;
+      }
+    }, {
+      key: Phaser.Keyboard.DOWN
+      , direction: d.S
+      , xy: (o, x, y, v) => {
+        o[y] += v;
+        return o;
+      }
+    }, {
+      key: Phaser.Keyboard.LEFT
+      , direction: d.W
+      , xy: (o, x, y, v) => {
+        o[x] -= v;
+        return o;
+      }
+    }]
   }
 
-  move(movementObject, movementFn) {
-    this.moving = true;
-    this.game.add.tween(this)
-      .to(movementObject, 200, Phaser.Easing.Linear.None, true)
-      .onComplete.add(() => {
-        this.moving = false;
+  setControls() {
+    let controls = [];
+    this.movementMap().forEach((movObj) => {
+      controls.push(() => {
+        if (!this.moving) {
+          if (this.game.input.keyboard.isDown(movObj.key)) {
+            this.move(movObj);
+          }
+        }
       });
+    });
+
+    this.updateControls = () => {
+      for (let i = 0; i < 4; ++i) {
+        controls[i]();
+      }
+    };
+  }
+
+  move(movObj) {
+    if (
+      !this.getCell().borders.get(movObj.direction)
+      && this.getCell().cells.get(movObj.direction)
+    ) {
+      this.moving = true;
+      this.game.add.tween(this)
+        .to(
+        movObj.xy({x: this.x, y: this.y}, 'x', 'y', this.level.SIZE)
+        , 200
+        , Phaser.Easing.Linear.None
+        , true)
+        .onComplete.add(() => {
+          movObj.xy(this, 'X', 'Y', 1);
+          this.moving = false;
+        });
+    }
   }
 
   update() {
-    if (!this.moving) {
-      if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-        this.move({y: this.y + this.level.SIZE}, () => {
-          this.Y++;
-        });
-      }
-      if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-        this.move({y: this.y - this.level.SIZE}, () => {
-          this.Y--;
-        });
-      }
-      if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-        this.move({x: this.x - this.level.SIZE}, () => {
-          this.X--;
-        });
-      }
-      if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-        this.move({x: this.x + this.level.SIZE}, () => {
-          this.X++;
-        });
-      }
-    }
-
-    //console.log('update');
+    this.updateControls();
   }
 
   draw() {
@@ -77,28 +98,10 @@ class Player extends Entity {
   render() {
     console.log('render');
   }
+
+  getCell() {
+    return this.level.cells.get(this.X, this.Y);
+  }
 }
 
 export {Player};
-
-
-
-//setupControls() {
-//this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN)
-//  .onDown.add(() => {
-//    this.game.camera.y += 50;
-//    console.log(this.game.camera.x, this.game.camera.y)
-//  });
-//this.game.input.keyboard.addKey(Phaser.Keyboard.UP)
-//  .onDown.add(() => {this.game.camera.y -= 50;
-//    console.log(this.game.camera.x, this.game.camera.y)
-//  });
-//this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT)
-//  .onDown.add(() => {this.game.camera.x -= 50;
-//    console.log(this.game.camera.x, this.game.camera.y)
-//  });
-//this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT)
-//  .onDown.add(() => {this.game.camera.x += 50;
-//    console.log(this.game.camera.x, this.game.camera.y)
-//  });
-//}

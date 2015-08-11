@@ -15,8 +15,8 @@ class Level extends Phaser.Sprite {
         this.HEIGHT = Math.floor(this.game.world.height / this.SIZE);
         //this.WIDTH = 2;
         //this.HEIGHT = 2;
-        this.WIDTH = 15;
-        this.HEIGHT = 15;
+        //this.WIDTH = 15;
+        //this.HEIGHT = 15;
 
         this.game.add.existing(this);
         this.anchor.setTo(0.5, 0.5);
