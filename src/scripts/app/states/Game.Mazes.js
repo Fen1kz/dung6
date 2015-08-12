@@ -1,5 +1,6 @@
 import {Level} from 'app/objects/level';
 import {Wilson} from 'app/objects/mazes/generators/wilson';
+import {WilsonWalls} from 'app/objects/mazes/generators/wilson-walls';
 import {Cell} from 'app/entities/level/cell';
 import {Player} from 'app/entities/player';
 
@@ -51,7 +52,7 @@ export default class Mazes extends Phaser.State {
             //console.log(x, y, this.game.camera.x, this.game.camera.y)
           })
           .then(() => {
-            this.level.setGenerator(new Wilson());
+            this.level.setGenerator(new WilsonWalls());
             return this.level.generator.start();
           })
           .then(() => {

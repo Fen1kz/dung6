@@ -9,6 +9,10 @@ class Direction {
         return this.constructor.fromNumber((this.num << 2) % 15);
     }
 
+    right() {
+        return this.constructor.fromNumber((this.num << 1) % 15);
+    }
+
     toString() {
         return `${this.str}:${this.arrow}`;
     }

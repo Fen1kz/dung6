@@ -28,8 +28,6 @@ class Wilson extends Generator {
 
   start() {
     super.start();
-    this.cells = this.level.cells.toArray();
-
     let target = this.firstFn(this.cells)
       .setState('mark');
 
@@ -48,20 +46,6 @@ class Wilson extends Generator {
       .then(() => {
         this.stopped();
       });
-    //return this.loop(this.walk, [target], Math.floor(this.cells.length / this.INITIAL_WALK_FACTOR))
-    //  .then(() => {
-    //    return this.makeCellsPlaced();
-    //  })
-    //  .then(() => {
-    //    return this.loop(() => {
-    //      return this.walkToTarget()
-    //        .then(() => {
-    //          return {
-    //            result: this.cells.length < 1
-    //          }
-    //        })
-    //    });
-    //  });
   }
 
   $walk(next, direction) {
@@ -136,6 +120,12 @@ class Wilson extends Generator {
     }
   }
 
+  makeCellPlaced(cell) {
+    _.remove(this.cells, (c) => c === cell);
+    cell.direction = void 0;
+    cell.setState('placed');
+  }
+
   makeCellsPlaced() {
     for (let i = 0; i < this.path.length; ++i) {
       let prev = (i > 0) ? this.path[i - 1] : void 0;
@@ -159,12 +149,7 @@ class Wilson extends Generator {
           new Border(cell, cell.cells.get(d));
       });
 
-      _.remove(this.cells, (c) => c === cell);
-      cell.direction = void 0;
-      cell.setState('placed');
-
-      //this.game.draw();
-      //debugger;
+      this.makeCellPlaced(cell);
     }
     this.path = [];
   }

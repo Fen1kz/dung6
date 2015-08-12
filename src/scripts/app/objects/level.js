@@ -10,13 +10,16 @@ class Level extends Phaser.Sprite {
     constructor(game, x, y, key, frame) {
         super(game, x, y, key, frame);
 
-        this.SIZE = 40;
         //this.WIDTH = Math.floor(this.game.world.width / this.SIZE);
         //this.HEIGHT = Math.floor(this.game.world.height / this.SIZE);
         //this.WIDTH = 2;
         //this.HEIGHT = 2;
         this.WIDTH = 16;
         this.HEIGHT = 16;
+        this.MINX = -Math.ceil(this.WIDTH / 2);
+        this.MINY = -Math.ceil(this.HEIGHT / 2);
+        this.MAXX = Math.floor(this.WIDTH / 2) - 1;
+        this.MAXY = Math.floor(this.HEIGHT / 2) - 1;
 
         this.game.add.existing(this);
         this.anchor.setTo(0.5, 0.5);
@@ -28,8 +31,8 @@ class Level extends Phaser.Sprite {
 
         this.borders = [];
         this.cells = new CellList();
-        for (let X = -Math.floor(this.WIDTH / 2); X < Math.ceil(this.WIDTH / 2); ++X) {
-            for (let Y = -Math.floor(this.HEIGHT / 2); Y < Math.ceil(this.HEIGHT / 2); ++Y) {
+        for (let X = this.MINX; X <= this.MAXX; ++X) {
+            for (let Y = this.MINY; Y <= this.MAXY; ++Y) {
                 this.cells.add(new Cell(this, X, Y));
             }
         }

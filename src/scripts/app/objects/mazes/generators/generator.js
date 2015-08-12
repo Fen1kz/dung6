@@ -34,6 +34,7 @@ class Generator {
       });
 
     this.level.clear();
+    this.cells = this.level.cells.toArray();
   }
 
   stop() {
