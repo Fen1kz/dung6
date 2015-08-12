@@ -69,7 +69,7 @@ class Player extends Entity {
       this.moving = true;
       this.game.add.tween(this)
         .to(
-        movObj.xy({x: this.x, y: this.y}, 'x', 'y', this.level.SIZE)
+        movObj.xy({x: this.x, y: this.y}, 'x', 'y', this.game.c.SIZE)
         , 200
         , Phaser.Easing.Linear.None
         , true)
@@ -89,7 +89,7 @@ class Player extends Entity {
     this.graphics.lineStyle(2, 0xaaaaaa);
     //this.graphics.lineStyle(2, 0xdddddd);
     this.graphics.beginFill(0xff0000);
-    this.graphics.drawCircle(this.level.SIZE * -.5, this.level.SIZE * -.5, this.level.SIZE);
+    this.graphics.drawCircle(0, 0, .75 * this.game.c.SIZE);
     //this.graphics.drawRect(0, 0, this.width, this.height);
     this.graphics.endFill();
     return this;

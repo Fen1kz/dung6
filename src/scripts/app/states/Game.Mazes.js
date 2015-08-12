@@ -1,5 +1,5 @@
-import {Level} from 'app/states/mazes/level';
-import {Wilson} from 'app/states/mazes/generators/wilson';
+import {Level} from 'app/objects/level';
+import {Wilson} from 'app/objects/mazes/generators/wilson';
 import {Cell} from 'app/entities/level/cell';
 import {Player} from 'app/entities/player';
 
@@ -17,11 +17,10 @@ export default class Mazes extends Phaser.State {
     }
 
     create() {
-
-        this.game.world.setBounds(0, 0, 400, 400);
+        this.game.world.setBounds(0, 0, 1800, 1800);
         if (this.game.camera.bounds) {
           //  The Camera can never be smaller than the game size
-          this.game.camera.bounds.setTo(0, 0, 400, 400);
+          this.game.camera.bounds.setTo(0, 0, 1800, 1800);
         }
         this.game.stage.backgroundColor = 0xfefefe;
 

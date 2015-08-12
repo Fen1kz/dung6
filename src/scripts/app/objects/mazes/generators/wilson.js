@@ -3,7 +3,7 @@
 import Promise from 'bluebird';
 import _ from 'lodash';
 
-import {Generator} from 'app/states/mazes/generators/generator'
+import {Generator} from 'app/objects/mazes/generators/generator'
 import {CellState} from 'app/entities/level/cell'
 import {Border} from 'app/entities/level/border'
 import {Direction} from 'app/entities/level/directions'

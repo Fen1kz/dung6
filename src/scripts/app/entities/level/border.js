@@ -36,20 +36,27 @@ class Border extends Phaser.Sprite {
     this.graphics.clear();
     this.graphics.lineStyle(4, 0x0);
 
+    //if (this.horizontal) {
+    //  this.graphics.moveTo(-.5 * this.game.c.SIZE, this.game.c.SIZE);
+    //  this.graphics.lineTo(.5 * this.game.c.SIZE, this.game.c.SIZE);
+    //} else {
+    //  this.graphics.moveTo(this.game.c.SIZE, -.5 * this.game.c.SIZE);
+    //  this.graphics.lineTo(this.game.c.SIZE, .5 * this.game.c.SIZE);
+    //}
     if (this.horizontal) {
-      this.graphics.moveTo(-this.level.SIZE, -this.level.SIZE / 2);
-      this.graphics.lineTo(0, -this.level.SIZE / 2);
+      this.graphics.moveTo(-.5 * this.game.c.SIZE, 0);
+      this.graphics.lineTo(.5 * this.game.c.SIZE, 0);
     } else {
-      this.graphics.moveTo(-this.level.SIZE / 2, -this.level.SIZE);
-      this.graphics.lineTo(-this.level.SIZE / 2, 0);
+      this.graphics.moveTo(0, -.5 * this.game.c.SIZE);
+      this.graphics.lineTo(0, .5 * this.game.c.SIZE);
     }
 
     //if (this.horizontal) {
-    //  this.graphics.moveTo(-this.level.SIZE / 2, 0);
-    //  this.graphics.lineTo(+this.level.SIZE / 2, 0);
+    //  this.graphics.moveTo(-this.game.c.SIZE / 2, 0);
+    //  this.graphics.lineTo(+this.game.c.SIZE / 2, 0);
     //} else {
-    //  this.graphics.moveTo(0, -this.level.SIZE / 2);
-    //  this.graphics.lineTo(0, +this.level.SIZE / 2);
+    //  this.graphics.moveTo(0, -this.game.c.SIZE / 2);
+    //  this.graphics.lineTo(0, +this.game.c.SIZE / 2);
     //}
   }
 

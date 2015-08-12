@@ -35,9 +35,16 @@ class Cell extends Entity {
 
   draw() {
     var style = {
-      font: this.level.SIZE * .5 + "px Arial"
+      font: this.game.c.SIZE * .5 + "px Arial"
       //, fill: "#ff0044"
       , wordWrap: true
+      , wordWrapWidth: this.width
+      , align: "center"
+    };
+
+    var style2 = {
+      font: this.game.c.SIZE * .3 + "px Arial"
+      //, fill: "#ff0044"
       , wordWrapWidth: this.width
       , align: "center"
     };
@@ -46,16 +53,23 @@ class Cell extends Entity {
       this.text.destroy();
     if (this.direction) {
       //console.log(this.direction.arrow);
-      this.text = this.game.add.text(this.level.x + this.x, this.level.y + this.y, this.direction.arrow, style);
+      this.text = this.game.add.text(0, 0, this.direction.arrow, style);
       this.text.anchor.set(0.5);
+      this.addChild(this.text);
     }
+
+    if (this.numbers)
+      this.numbers.destroy();
+    this.numbers = this.game.add.text(0, 0, `${this.X}:${this.Y}`, style2);
+    this.numbers.anchor.set(0.5, -.1);
+    this.addChild(this.numbers);
 
     super.draw();
     this.graphics.lineStyle(2, 0xaaaaaa);
     //this.graphics.lineStyle(2, 0xdddddd);
     this.graphics.beginFill(this.state.color);
-    //this.graphics.drawRect(this.level.SIZE * -.5, this.level.SIZE * -.5, this.level.SIZE, this.level.SIZE);
-    this.graphics.drawRect(this.level.SIZE * -1, this.level.SIZE * -1, this.level.SIZE, this.level.SIZE);
+    this.graphics.drawRect(this.game.c.SIZE * -.5, this.game.c.SIZE * -.5, this.game.c.SIZE, this.game.c.SIZE);
+    //this.graphics.drawRect(this.game.c.SIZE * -1, this.game.c.SIZE * -1, this.game.c.SIZE, this.game.c.SIZE);
     //this.graphics.drawRect(0, 0, this.width, this.height);
     this.graphics.endFill();
     return this;

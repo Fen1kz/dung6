@@ -42,6 +42,10 @@ export default class Boot extends Phaser.State {
 
     this.stage.disableVisibilityChange = true;
     this.stage.smoothed = true;
+
+    this.game.c = {
+      SIZE: 30
+    }
   }
 
 }

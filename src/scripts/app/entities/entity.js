@@ -10,10 +10,10 @@ class Entity extends Phaser.Sprite {
     this.Y = Y;
 
     this.anchor.setTo(0.5, 0.5);
-    this.x = this.level.SIZE / 2 + this.X * this.level.SIZE;
-    this.y = this.level.SIZE / 2 + this.Y * this.level.SIZE;
-    //this.x = this.X * this.level.SIZE;
-    //this.y = this.Y * this.level.SIZE;
+    //this.x = this.game.c.SIZE / 2 + this.X * this.game.c.SIZE;
+    //this.y = this.game.c.SIZE / 2 + this.Y * this.game.c.SIZE;
+    this.x = this.X * this.game.c.SIZE;
+    this.y = this.Y * this.game.c.SIZE;
 
     this.game = this.level.game;
     this.anchor.setTo(0.5, 0.5);
