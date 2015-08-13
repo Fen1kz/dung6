@@ -14,24 +14,31 @@ class Direction {
     }
 
     toString() {
-        return `${this.str}:${this.arrow}`;
+        return this.str;
     }
 }
 
 var Directions = {
-    N: new Direction('N', (1 << 0), '↑')
+      N: new Direction('N', (1 << 0), '↑')
     , E: new Direction('E', (1 << 1), '→')
     , S: new Direction('S', (1 << 2), '↓')
     , W: new Direction('W', (1 << 3), '←')
 };
 
+var DirectionsNumber = {
+    [1 << 0]: Directions.N
+  , [1 << 1]: Directions.E
+  , [1 << 2]: Directions.S
+  , [1 << 3]: Directions.W
+}
+
 Direction.fromNumber = function (num) {
-    return _.find(Directions, (d) => num === d.num);
+    return DirectionsNumber[num];
 };
 
 Direction.fromString = function (str) {
-    return _.find(Directions, (d) => str === d.toString());
+    return Directions[str];
 };
 
 
-export {Direction, Directions};
+export {Direction, Directions, DirectionsNumber};
