@@ -117,7 +117,7 @@ class Cell extends Entity {
   }
 
   setState(state) {
-    this.state = CellState[state];
+    this.state = _.clone(CellState[state]);
     this.draw();
     return this;
   }
