@@ -3,27 +3,25 @@
 import Promise from 'bluebird';
 import _ from 'lodash';
 
-import {Generator} from 'app/objects/mazes/generators/generator'
-import {CellState} from 'app/entities/level/cell'
-import {Border} from 'app/entities/level/border'
-import {Direction} from 'app/entities/level/directions'
+import {Generator} from 'app/objects/mazes/generators/generator';
+import {CellState} from 'app/entities/level/cell';
+import {Border} from 'app/entities/level/border';
+import {Direction} from 'app/entities/level/directions';
+import {Random} from 'app/util/random';
 
 class Wilson extends Generator {
-  constructor(options) {
-    super();
+  constructor(level, options) {
+    super(level, options);
     this.walkToTarget = Promise.method(this.$walkToTarget).bind(this);
     this.walk = Promise.method(this.$walk).bind(this);
 
-    if (options && options.firstFn) {
-      this.firstFn = options.firstFn;
-    } else {
-      this.firstFn = (cells) => {
-        return cells.shift();
-      }
-    }
     this.INITIAL_WALK_FACTOR = 20;
     this.cells = [];
     this.path = [];
+  }
+
+  firstFn (cells) {
+    return cells.shift();
   }
 
   start() {
@@ -61,7 +59,7 @@ class Wilson extends Generator {
 
     // get new direction
     //direction = _.sample(directions);
-    direction = directions[Math.floor(Math.random() * directions.length)];
+    direction = Random.sample(directions);
 
     next.direction = direction;
     next.draw();

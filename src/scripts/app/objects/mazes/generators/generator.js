@@ -2,11 +2,12 @@
 
 import Promise from 'bluebird';
 
-import seedrandom from 'seedrandom';
-
 class Generator {
-  constructor() {
+  constructor(level, options) {
     this.SPEED = 0;
+    this.level = level;
+    this.game = level.game;
+    this.activate();
   }
 
   activate() {
@@ -14,7 +15,6 @@ class Generator {
   }
 
   on() {
-    seedrandom(this.game.seed, { global: true });
     $('#control')
       .text('Start')
       .off('click.stop')
@@ -50,8 +50,8 @@ class Generator {
     return fn.apply(this, args)
       .then((x) => {
         return (this.SPEED == 0
-          ? Promise.resolve(x)
-          : Promise.resolve(x).delay(this.SPEED)
+            ? Promise.resolve(x)
+            : Promise.resolve(x).delay(this.SPEED)
         );
       })
       //.tap((data) => {debugger;})

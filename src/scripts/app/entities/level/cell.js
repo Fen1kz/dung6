@@ -11,8 +11,9 @@ const SHOW_ALPHA_SPEED = 500;
 const SHOW_SCALE_SPEED = 500;
 
 class Cell extends Entity {
-  constructor(level, X, Y) {
-    super(level, X, Y);
+  constructor(chunk, X, Y) {
+    super(chunk.level, X, Y);
+    this.chunk = chunk;
 
     this.cells = new CompositeMap();
     this.borders = new CompositeMap();
