@@ -7,6 +7,7 @@ import {Direction} from 'app/entities/level/directions';
 class Room {
   constructor(center) {
     this.center = center;
+    this.level = center.level;
 
     this.cells = [center];
 
@@ -15,17 +16,44 @@ class Room {
 
   static get config() {
     return {
-      side: 3
+      side: {min: 2, max: 6}
       , square: {min: 9, max: 25}
     }
-  };
+  }
+
+;
 
   generate() {
     this.center.state.color = 0xFF0000;
     this.center.draw();
 
-    let side = this.square
+    let config = this.constructor.config;
+    let sizes = [];
+    let side = config.side.min;
+    for (let side1 = config.side.min; side1 <= config.side.max; ++side1) {
+      for (let side2 = config.side.min; side2 <= config.side.max; ++side2) {
+        if (side1 * side2 >= config.square.min && side1 * side2 <= config.square.max) {
+          sizes.push({side1: {length: side1}, side2: {length: side2}});
+        }
+      }
+    }
 
+    let size = Random.sample(sizes);
+    size.side1.min = -Math.floor(size.side1.length / 2);
+    size.side1.max = Math.ceil(size.side1.length / 2);
+    size.side2.min = -Math.floor(size.side2.length / 2);
+    size.side2.max = Math.ceil(size.side2.length / 2);
+    console.log(size);
+
+    for (let side1 = size.side1.min; side1 < size.side1.max; ++side1) {
+      for (let side2 = size.side2.min; side2 < size.side2.max; ++side2) {
+        let cell = this.level.cells.get(this.center.X + side1, this.center.Y + side2);
+        if (cell !== this.center) {
+          cell.state.color = 0xFF9999;
+          cell.draw();
+        }
+      }
+    }
 
 
     //this.
@@ -40,7 +68,6 @@ class Room {
     //
     //this.center.state.color = 0xFF0000;
     //this.center.draw();
-
 
 
     //this.X = Random.include(this.chunk.MINX + this.side, this.chunk.MAXX - this.side);

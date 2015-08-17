@@ -30,10 +30,10 @@ export default class Mazes extends Phaser.State {
       .then(() => {
         let cells = chunk.cells.toArray();
         _.remove(cells, (cell) => {
-          if (Math.abs(chunk.MINX - cell.X) < Math.floor(Room.config.side / 2)) return true;
-          if (Math.abs(chunk.MAXX - cell.X) < Math.floor(Room.config.side / 2)) return true;
-          if (Math.abs(chunk.MINY - cell.Y) < Math.floor(Room.config.side / 2)) return true;
-          if (Math.abs(chunk.MAXY - cell.Y) < Math.floor(Room.config.side / 2)) return true;
+          if (Math.abs(chunk.MINX - cell.X) < Math.floor(Room.config.side.max / 2)) return true;
+          if (Math.abs(chunk.MAXX - cell.X) < Math.floor(Room.config.side.max / 2)) return true;
+          if (Math.abs(chunk.MINY - cell.Y) < Math.floor(Room.config.side.max / 2)) return true;
+          if (Math.abs(chunk.MAXY - cell.Y) < Math.floor(Room.config.side.max / 2)) return true;
           return false;
         });
         cells.forEach((cell) => {
@@ -44,7 +44,7 @@ export default class Mazes extends Phaser.State {
         let room = new Room(cell);
           room.generate();
 
-      })
+      });
       //.then(() => {
       //  let generator = new Wilson(this.level);
       //  return generator.start();
