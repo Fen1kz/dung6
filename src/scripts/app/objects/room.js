@@ -10,42 +10,44 @@ class Room {
     this.level = level;
 
     this.cells = [];
+
+    this.generateSize();
   }
 
   static get config() {
     return {
-      side: {min: 3, max: 6}
-      , square: {min: 9, max: 25}
+      //side: {min: 3, max: 6}
+      //, square: {min: 9, max: 25}
+      side: {min: 3, max: 8}
+      //, square: {min: 9, max: 25}
     }
   }
 
   generateSize() {
-
-  }
-
-  generate() {
-    this.center.state.color = 0xFF0000;
-    this.center.draw();
-
     let config = this.constructor.config;
     let sizes = [];
     let side = config.side.min;
     for (let side1 = config.side.min; side1 <= config.side.max; ++side1) {
       for (let side2 = config.side.min; side2 <= config.side.max; ++side2) {
-        if (side1 * side2 >= config.square.min && side1 * side2 <= config.square.max) {
+        if (!config.square || side1 * side2 >= config.square.min && side1 * side2 <= config.square.max) {
           sizes.push({side1: {length: side1}, side2: {length: side2}});
         }
       }
     }
+    this.size = Random.sample(sizes);
+    this.size.side1.min = -Math.floor(this.size.side1.length / 2);
+    this.size.side1.max = Math.ceil(this.size.side1.length / 2);
+    this.size.side2.min = -Math.floor(this.size.side2.length / 2);
+    this.size.side2.max = Math.ceil(this.size.side2.length / 2);
+  }
 
-    let size = Random.sample(sizes);
-    size.side1.min = -Math.floor(size.side1.length / 2);
-    size.side1.max = Math.ceil(size.side1.length / 2);
-    size.side2.min = -Math.floor(size.side2.length / 2);
-    size.side2.max = Math.ceil(size.side2.length / 2);
-
-    for (let side1 = size.side1.min; side1 < size.side1.max; ++side1) {
-      for (let side2 = size.side2.min; side2 < size.side2.max; ++side2) {
+  generate(center) {
+    this.center = center;
+    this.cells = [this.center];
+    this.center.state.color = 0xFF0000;
+    this.center.draw();
+    for (let side1 = this.size.side1.min; side1 < this.size.side1.max; ++side1) {
+      for (let side2 = this.size.side2.min; side2 < this.size.side2.max; ++side2) {
         let cell = this.level.cells.get(this.center.X + side1, this.center.Y + side2);
         if (cell !== this.center) {
           cell.state.color = 0xFF9999;

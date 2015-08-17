@@ -30,52 +30,69 @@ export default class Mazes extends Phaser.State {
       .bind(this)
       .then(() => {
         let cells = chunk.cells.toArray();
-        let safeDistance = Math.floor(Room.config.side.max / 2);
-        cells = Room.shrinkTo(cells, _.values(d), safeDistance);
-        cells.forEach((cell) => {
-          cell.setState('placed');
-        });
+        //let safeDistance = Math.floor(Room.config.side.max / 2);
+        //cells = Room.shrinkTo(cells, _.values(d), safeDistance);
+        //cells.forEach((cell) => {
+        //  cell.setState('placed');
+        //});
 
         let rooms = [];
-        for (let i = 0; i < 3 && cells.length > 0; ++i) {
-          let cell = Random.sample(cells);
-          let room = new Room(level);
+        for (let i = 0; i < 111; ++i) {
+          let room = new Room(this.level);
           rooms.push(room);
-          room.generate();
+          console.log('room generated', room.size);
+          let avaliableCells = Room.shrinkTo(cells, d.N, Math.abs(room.size.side2.min));
+              avaliableCells = Room.shrinkTo(avaliableCells, d.W, Math.abs(room.size.side1.min));
+              avaliableCells = Room.shrinkTo(avaliableCells, d.S, Math.abs(room.size.side2.max) - 1);
+              avaliableCells = Room.shrinkTo(avaliableCells, d.E, Math.abs(room.size.side1.max) - 1);
 
-          let wasted = Room.expandTo(room.cells, _.values(d), safeDistance);
-          cells = _.without.apply(_, [cells].concat(wasted));
+          rooms.forEach((r) => {
+            let wastedCells = Room.expandTo(r.cells, d.N, Math.abs(room.size.side2.max));
+            wastedCells = Room.expandTo(wastedCells, d.W, Math.abs(room.size.side1.max));
+            wastedCells = Room.expandTo(wastedCells, d.S, Math.abs(room.size.side2.min) + 1);
+            wastedCells = Room.expandTo(wastedCells, d.E, Math.abs(room.size.side1.min) + 1);
+            avaliableCells = _.without.apply(_, [avaliableCells].concat(wastedCells));
+          });
 
-          wasted.forEach((cell) => {
-            if (!_.find(room.cells, cell)) {
-              //cell.state.color = 0x0000FF;
-              //cell.draw();
-              cell.setState();
-            }
+          avaliableCells.forEach((cell) => {
+            cell.setState('placed');
+          });
+
+          if (avaliableCells.length == 0) {
+            break;
+          }
+
+          let cell = Random.sample(avaliableCells);
+          room.generate(cell);
+
+          cells = _.without.apply(_, [cells].concat(room.cells));
+
+          cells.forEach((cell) => {
+            cell.setState();
           });
         }
 
         rooms.forEach((r) => {
           r.cells.forEach((c) => {
-            c.state.color = 0xFF9999;
+            c.state.color = c === r.center ? 0xFF0000 : 0xFF9999;
             c.draw();
           })
         });
       });
-      //.then(() => {
-      //  let generator = new Wilson(this.level);
-      //  return generator.start();
-      //})
-      //.then(() => {
-      //  console.log('generation stopped');
-      //})
-      //.then(() => {
-      //  this.player = new Player(
-      //    this.level
-      //    , this.level.chunks.get(0, 0).MAXX
-      //    , this.level.chunks.get(0, 0).MAXY
-      //  );
-      //});
+    //.then(() => {
+    //  let generator = new Wilson(this.level);
+    //  return generator.start();
+    //})
+    //.then(() => {
+    //  console.log('generation stopped');
+    //})
+    //.then(() => {
+    //  this.player = new Player(
+    //    this.level
+    //    , this.level.chunks.get(0, 0).MAXX
+    //    , this.level.chunks.get(0, 0).MAXY
+    //  );
+    //});
   }
 
   update() {
