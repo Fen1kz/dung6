@@ -5,23 +5,23 @@ import {Random} from 'app/util/random';
 import {Direction} from 'app/entities/level/directions';
 
 class Room {
-  constructor(center) {
-    this.center = center;
-    this.level = center.level;
+  constructor(level) {
+    //this.center = center;
+    this.level = level;
 
-    this.cells = [center];
-
-    this.sq = Random.include(this.constructor.config.square.min, this.constructor.config.square.max);
+    this.cells = [];
   }
 
   static get config() {
     return {
-      side: {min: 2, max: 6}
+      side: {min: 3, max: 6}
       , square: {min: 9, max: 25}
     }
   }
 
-;
+  generateSize() {
+
+  }
 
   generate() {
     this.center.state.color = 0xFF0000;
@@ -43,7 +43,6 @@ class Room {
     size.side1.max = Math.ceil(size.side1.length / 2);
     size.side2.min = -Math.floor(size.side2.length / 2);
     size.side2.max = Math.ceil(size.side2.length / 2);
-    console.log(size);
 
     for (let side1 = size.side1.min; side1 < size.side1.max; ++side1) {
       for (let side2 = size.side2.min; side2 < size.side2.max; ++side2) {
@@ -51,53 +50,98 @@ class Room {
         if (cell !== this.center) {
           cell.state.color = 0xFF9999;
           cell.draw();
+          this.cells.push(cell);
         }
       }
     }
-
-
-    //this.
-
-    //this.expand(1);
-    //this.expand(1);
-    //
-    //this.cells.forEach((cell) => {
-    //   cell.state.color = 0xFF9999;
-    //   cell.draw();
-    //});
-    //
-    //this.center.state.color = 0xFF0000;
-    //this.center.draw();
-
-
-    //this.X = Random.include(this.chunk.MINX + this.side, this.chunk.MAXX - this.side);
-    //this.Y = Random.include(this.chunk.MINY + this.side, this.chunk.MAXY - this.side);
-    //let cell = this.chunk.cells.get(this.X, this.Y);
   }
 
-  expand(count = 1) {
-    for (let i = 0; i < count; ++i) {
-      this.cells.forEach((cell) => {
-        this.expandCell(cell);
-      }, this);
-      //console.log('---');
-      //console.log(arr.length);
-      this.cells = _.uniq(this.cells);
-      //console.log(arr.length);
+  static expandTo(array, d, count = 1) {
+    let maxD
+      , side
+      , result = _.clone(array);
+
+    if (Array.isArray(d)) {
+      return d.reduce((result, d) => {
+        return Room.expandTo(result, d, count);
+      }, result);
     }
-    return this.cells;
+
+    switch (d.str) {
+      case 'N':
+        maxD = _.min(array, (c) => c.Y);
+        side = _.filter(array, (c) => c.Y === maxD.Y);
+        break;
+      case 'E':
+        maxD = _.max(array, (c) => c.X);
+        side = _.filter(array, (c) => c.X === maxD.X);
+        break;
+      case 'S':
+        maxD = _.max(array, (c) => c.Y);
+        side = _.filter(array, (c) => c.Y === maxD.Y);
+        break;
+      case 'W':
+        maxD = _.min(array, (c) => c.X);
+        side = _.filter(array, (c) => c.X === maxD.X);
+        break;
+    }
+
+    for (let i = 0; i < count; ++i) {
+      let newSide = [];
+      side.forEach((c) => {
+        let child = c.cells.get(d);
+        if (child) {
+          newSide.push(child);
+          result.push(child);
+        }
+      });
+      side = newSide;
+    }
+    return result;
   }
 
-  expandCell(cell) {
-    cell.cells.forEach((cell1, key) => {
-      let d = Direction.fromString(key);
-      let cell2 = cell1.cells.get(d.right());
-      this.cells.push(cell1);
-      if (cell2) {
-        this.cells.push(cell2);
-      }
-    }, this);
-    return this.cells;
+  static shrinkTo(array, d, count = 1) {
+    let maxD
+      , side
+      , result = _.clone(array);
+
+    if (Array.isArray(d)) {
+      return d.reduce((result, d) => {
+        return Room.shrinkTo(result, d, count);
+      }, result);
+    }
+
+    switch (d.str) {
+      case 'N':
+        maxD = _.min(array, (c) => c.Y);
+        side = _.filter(array, (c) => c.Y === maxD.Y);
+        break;
+      case 'E':
+        maxD = _.max(array, (c) => c.X);
+        side = _.filter(array, (c) => c.X === maxD.X);
+        break;
+      case 'S':
+        maxD = _.max(array, (c) => c.Y);
+        side = _.filter(array, (c) => c.Y === maxD.Y);
+        break;
+      case 'W':
+        maxD = _.min(array, (c) => c.X);
+        side = _.filter(array, (c) => c.X === maxD.X);
+        break;
+    }
+
+    for (let i = 0; i < count; ++i) {
+      let newSide = [];
+      side.forEach((c) => {
+        _.remove(result, c);
+        let child = c.cells.get(d.opposite());
+        if (child) {
+          newSide.push(child);
+        }
+      });
+      side = newSide;
+    }
+    return result;
   }
 }
 

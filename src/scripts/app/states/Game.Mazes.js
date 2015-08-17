@@ -4,6 +4,7 @@ import {Room} from 'app/objects/room';
 import {Wilson} from 'app/objects/mazes/generators/wilson';
 import {WilsonWalls} from 'app/objects/mazes/generators/wilson-walls';
 import {Cell} from 'app/entities/level/cell';
+import {Directions as d} from 'app/entities/level/directions';
 import {Player} from 'app/entities/player';
 
 export default class Mazes extends Phaser.State {
@@ -29,21 +30,37 @@ export default class Mazes extends Phaser.State {
       .bind(this)
       .then(() => {
         let cells = chunk.cells.toArray();
-        _.remove(cells, (cell) => {
-          if (Math.abs(chunk.MINX - cell.X) < Math.floor(Room.config.side.max / 2)) return true;
-          if (Math.abs(chunk.MAXX - cell.X) < Math.floor(Room.config.side.max / 2)) return true;
-          if (Math.abs(chunk.MINY - cell.Y) < Math.floor(Room.config.side.max / 2)) return true;
-          if (Math.abs(chunk.MAXY - cell.Y) < Math.floor(Room.config.side.max / 2)) return true;
-          return false;
-        });
+        let safeDistance = Math.floor(Room.config.side.max / 2);
+        cells = Room.shrinkTo(cells, _.values(d), safeDistance);
         cells.forEach((cell) => {
           cell.setState('placed');
         });
-        let cell = Random.sample(cells);
 
-        let room = new Room(cell);
+        let rooms = [];
+        for (let i = 0; i < 3 && cells.length > 0; ++i) {
+          let cell = Random.sample(cells);
+          let room = new Room(level);
+          rooms.push(room);
           room.generate();
 
+          let wasted = Room.expandTo(room.cells, _.values(d), safeDistance);
+          cells = _.without.apply(_, [cells].concat(wasted));
+
+          wasted.forEach((cell) => {
+            if (!_.find(room.cells, cell)) {
+              //cell.state.color = 0x0000FF;
+              //cell.draw();
+              cell.setState();
+            }
+          });
+        }
+
+        rooms.forEach((r) => {
+          r.cells.forEach((c) => {
+            c.state.color = 0xFF9999;
+            c.draw();
+          })
+        });
       });
       //.then(() => {
       //  let generator = new Wilson(this.level);
