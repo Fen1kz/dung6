@@ -6,16 +6,20 @@ class Border extends Phaser.Sprite {
       throw "Border Error"
     }
 
-    let c1toc2 = cell1.directionTo(cell2);
-    let c2toc1 = cell2.directionTo(cell1);
+    var c1toc2 = cell1.directionTo(cell2);
+    if (cell2) var c2toc1 = cell2.directionTo(cell1);
 
     this.level = cell1.level;
     this.level.borders.push(this);
     this.cell1 = cell1;
-    this.cell2 = cell2;
+    //if (cell2) {
+      this.cell2 = cell2;
+    //} else {
+    //  this.cell2 = {x, y}
+    //}
 
     this.cell1.borders.put(c1toc2, this, false);
-    this.cell2.borders.put(c2toc1, this, false);
+    if (cell2) this.cell2.borders.put(c2toc1, this, false);
 
     this.x = (cell1.x + cell2.x) * .5;
     this.y = (cell1.y + cell2.y) * .5;
@@ -63,7 +67,7 @@ class Border extends Phaser.Sprite {
   destroy() {
     _.remove(this.level.borders, this);
     this.cell1.borders.removeByValue(this);
-    this.cell2.borders.removeByValue(this);
+    if (this.cell2.borders) this.cell2.borders.removeByValue(this);
     super.destroy(true);
   }
 }

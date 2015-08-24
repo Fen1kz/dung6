@@ -4,6 +4,7 @@ import {Room} from 'app/objects/room';
 import {Wilson} from 'app/objects/mazes/generators/wilson';
 import {WilsonWalls} from 'app/objects/mazes/generators/wilson-walls';
 import {Cell} from 'app/entities/level/cell';
+import {Border} from 'app/entities/level/border';
 import {Directions as d} from 'app/entities/level/directions';
 import {Player} from 'app/entities/player';
 
@@ -42,9 +43,9 @@ export default class Mazes extends Phaser.State {
           rooms.push(room);
           console.log('room generated', room.size);
           let avaliableCells = Room.shrinkTo(cells, d.N, Math.abs(room.size.side2.min));
-              avaliableCells = Room.shrinkTo(avaliableCells, d.W, Math.abs(room.size.side1.min));
-              avaliableCells = Room.shrinkTo(avaliableCells, d.S, Math.abs(room.size.side2.max) - 1);
-              avaliableCells = Room.shrinkTo(avaliableCells, d.E, Math.abs(room.size.side1.max) - 1);
+          avaliableCells = Room.shrinkTo(avaliableCells, d.W, Math.abs(room.size.side1.min));
+          avaliableCells = Room.shrinkTo(avaliableCells, d.S, Math.abs(room.size.side2.max) - 1);
+          avaliableCells = Room.shrinkTo(avaliableCells, d.E, Math.abs(room.size.side1.max) - 1);
 
           rooms.forEach((r) => {
             let wastedCells = Room.expandTo(r.cells, d.N, Math.abs(room.size.side2.max));
@@ -72,20 +73,47 @@ export default class Mazes extends Phaser.State {
           });
         }
 
+        //chunk.cells.forEach((cell) => {
+        //  cell.setState('placed');
+        //});
+
         rooms.forEach((r) => {
-          r.cells.forEach((c) => {
-            c.state.color = c === r.center ? 0xFF0000 : 0xFF9999;
-            c.draw();
+          r.cells.forEach((cell) => {
+            //cell.state.color = cell === r.center ? 0xFF0000 : 0xFF9999;
+            //cell.draw();
+            cell.setState('placed');
+          });
+
+          _.values(d).forEach((d) => {
+            Room
+              //.getSide(r.cells, _.values(d))
+              .getSide(r.cells, d)
+              .forEach((cell) => {
+                if (cell.cells.get(d)) new Border(cell, cell.cells.get(d));
+                //cell.state.color = 0xFF9999;
+                //cell.draw();
+              });
           })
         });
-      });
-    //.then(() => {
-    //  let generator = new Wilson(this.level);
-    //  return generator.start();
-    //})
-    //.then(() => {
-    //  console.log('generation stopped');
-    //})
+
+        this.level.rooms = rooms;
+      })
+      .then(() => {
+        let generator = new Wilson(this.game);
+        console.log(this.level.rooms)
+        let roomCells = _.reduce(this.level.rooms, (result, room) => result.concat(room.cells), []);
+        //console.log(roomCells.length, roomCells);
+        let cells = _.without.apply(_, [this.level.cells.toArray()].concat(roomCells));
+        cells.forEach((cell) => {
+          cell.state.color = 0x00FF00;
+          cell.draw();
+        });
+        return generator.start(cells);
+        //return generator.start(this.);
+      })
+      .then(() => {
+        console.log('generation stopped');
+      })
     //.then(() => {
     //  this.player = new Player(
     //    this.level

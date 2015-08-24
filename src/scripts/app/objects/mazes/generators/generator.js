@@ -3,10 +3,9 @@
 import Promise from 'bluebird';
 
 class Generator {
-  constructor(level, options) {
+  constructor(game, options) {
     this.SPEED = 0;
-    this.level = level;
-    this.game = level.game;
+    this.game = game;
     this.activate();
   }
 
@@ -24,7 +23,7 @@ class Generator {
       });
   }
 
-  start() {
+  start(cells) {
     $('#control')
       .text('Stop')
       .off('click.start')
@@ -33,8 +32,7 @@ class Generator {
         this.stop();
       });
 
-    this.level.clear();
-    this.cells = this.level.cells.toArray();
+    this.cells = cells;
   }
 
   stop() {

@@ -43,7 +43,8 @@ class Room {
 
   generate(center) {
     this.center = center;
-    this.cells = [this.center];
+    this.cells = [];
+    this.addCell(this.center);
     this.center.state.color = 0xFF0000;
     this.center.draw();
     for (let side1 = this.size.side1.min; side1 < this.size.side1.max; ++side1) {
@@ -52,49 +53,52 @@ class Room {
         if (cell !== this.center) {
           cell.state.color = 0xFF9999;
           cell.draw();
-          this.cells.push(cell);
+          this.addCell(cell);
         }
       }
     }
   }
 
+  addCell(cell) {
+    cell.room = this;
+    this.cells.push(cell);
+  }
+
   static expandTo(array, d, count = 1) {
-    let maxD
-      , side
-      , result = _.clone(array);
+    return this.resizeTo(array, d, count, true);
+  }
+
+  static shrinkTo(array, d, count = 1) {
+    return this.resizeTo(array, d, count, false);
+  }
+
+  static resizeTo(array, d, count = 1, expand) {
+    let side;
+    let result = _.clone(array);
 
     if (Array.isArray(d)) {
       return d.reduce((result, d) => {
-        return Room.expandTo(result, d, count);
+        return Room.resizeTo(result, d, count, expand);
       }, result);
     }
 
-    switch (d.str) {
-      case 'N':
-        maxD = _.min(array, (c) => c.Y);
-        side = _.filter(array, (c) => c.Y === maxD.Y);
-        break;
-      case 'E':
-        maxD = _.max(array, (c) => c.X);
-        side = _.filter(array, (c) => c.X === maxD.X);
-        break;
-      case 'S':
-        maxD = _.max(array, (c) => c.Y);
-        side = _.filter(array, (c) => c.Y === maxD.Y);
-        break;
-      case 'W':
-        maxD = _.min(array, (c) => c.X);
-        side = _.filter(array, (c) => c.X === maxD.X);
-        break;
-    }
+    side = this.getSide(array, d);
 
     for (let i = 0; i < count; ++i) {
       let newSide = [];
       side.forEach((c) => {
-        let child = c.cells.get(d);
-        if (child) {
-          newSide.push(child);
-          result.push(child);
+        if (expand) {
+          let child = c.cells.get(d);
+          if (child) {
+            newSide.push(child);
+            result.push(child);
+          }
+        } else {
+          _.remove(result, c);
+          let child = c.cells.get(d.opposite());
+          if (child) {
+            newSide.push(child);
+          }
         }
       });
       side = newSide;
@@ -102,17 +106,8 @@ class Room {
     return result;
   }
 
-  static shrinkTo(array, d, count = 1) {
-    let maxD
-      , side
-      , result = _.clone(array);
-
-    if (Array.isArray(d)) {
-      return d.reduce((result, d) => {
-        return Room.shrinkTo(result, d, count);
-      }, result);
-    }
-
+  static getSide(array, d) {
+    let maxD, side;
     switch (d.str) {
       case 'N':
         maxD = _.min(array, (c) => c.Y);
@@ -131,19 +126,7 @@ class Room {
         side = _.filter(array, (c) => c.X === maxD.X);
         break;
     }
-
-    for (let i = 0; i < count; ++i) {
-      let newSide = [];
-      side.forEach((c) => {
-        _.remove(result, c);
-        let child = c.cells.get(d.opposite());
-        if (child) {
-          newSide.push(child);
-        }
-      });
-      side = newSide;
-    }
-    return result;
+    return side;
   }
 }
 

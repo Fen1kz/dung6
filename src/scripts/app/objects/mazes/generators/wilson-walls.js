@@ -42,9 +42,9 @@ class WilsonWalls extends Wilson {
   //  return arr;
   //}
 
-  start() {
+  start(cells) {
     this.SPEED = 0;
-    super.start();
+    super.start(cells);
 
     //for (let i = 0; i < 5; ++i) {
     //  let x = _.random(this.level.MINX, this.level.MAXX);

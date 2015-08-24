@@ -24,8 +24,8 @@ class Wilson extends Generator {
     return cells.shift();
   }
 
-  start() {
-    super.start();
+  start(cells) {
+    super.start(cells);
     let target = this.firstFn(this.cells)
       .setState('mark');
 
