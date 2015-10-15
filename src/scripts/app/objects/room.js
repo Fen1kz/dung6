@@ -14,17 +14,16 @@ class Room {
     this.generateSize();
   }
 
-  static get config() {
+  getConfig() {
     return {
-      //side: {min: 3, max: 6}
-      //, square: {min: 9, max: 25}
-      side: {min: 3, max: 8}
-      //, square: {min: 9, max: 25}
+      width: {min: 3, max: 5}
+      , height: {min: 3, max: 5}
+      , area: {min: 9, max: 25}
     }
   }
 
   generateSize() {
-    let config = this.constructor.config;
+    let config = this.getConfig();
     let sizes = [];
     let side = config.side.min;
     for (let side1 = config.side.min; side1 <= config.side.max; ++side1) {

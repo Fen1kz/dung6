@@ -35,12 +35,17 @@ class Level extends Phaser.Group {
     this.chunks = new CompositeMap2d();
   }
 
-  chunk(X, Y) {
-    let chunk = new Chunk(this, X, Y);
-    this.chunks.add(chunk);
-    this.addChild(chunk);
-    return chunk;
+  get $add() {
+    return {
+      chunk: (X, Y) => {
+        let chunk = new Chunk(this, X, Y);
+        this.chunks.add(chunk);
+        this.add(chunk);
+        return chunk;
+      }
+    }
   }
+
 
   clear() {
     this.cells.forEach((cell) => {

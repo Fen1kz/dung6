@@ -10,10 +10,12 @@ import {Player} from 'app/entities/player';
 
 export default class Mazes extends Phaser.State {
   preload() {
-    Random.init(this.game)
+    Random.init(this.game);
   }
 
   create() {
+    window.game = this.game;
+
     this.game.world.setBounds(0, 0, 1800, 1800);
     if (this.game.camera.bounds) {
       //  The Camera can never be smaller than the game size
@@ -26,94 +28,106 @@ export default class Mazes extends Phaser.State {
 
     this.level = new Level(this.game);
     this.game.add.existing(this.level);
-    let chunk = this.level.chunk(0, 0);
+
+    let chunk = this.level.$add.chunk(0, 0);
+    this.level.$add.chunk(0, 1);
+
+    let mark = (cells, color) => {
+      cells.forEach(c => c.state.color = color);
+    };
+
     this.level.show()
       .bind(this)
       .then(() => {
-        let cells = chunk.cells.toArray();
-        //let safeDistance = Math.floor(Room.config.side.max / 2);
-        //cells = Room.shrinkTo(cells, _.values(d), safeDistance);
-        //cells.forEach((cell) => {
-        //  cell.setState('placed');
+        //let cells = chunk.cells.toArray();
+        ////let safeDistance = Math.floor(Room.config.side.max / 2);
+        ////cells = Room.shrinkTo(cells, _.values(d), safeDistance);
+        ////cells.forEach((cell) => {
+        ////  cell.setState('placed');
+        ////});
+        //
+        //let rooms = [];
+        //for (let i = 0; i < 1; ++i) {
+        //  let room = new Room(this.level);
+        //  rooms.push(room);
+        //  console.log('room generated', room.size);
+        //  let avaliableCells = Room.shrinkTo(cells, d.N, Math.abs(room.size.side2.min));
+        //  avaliableCells = Room.shrinkTo(avaliableCells, d.W, Math.abs(room.size.side1.min));
+        //  avaliableCells = Room.shrinkTo(avaliableCells, d.S, Math.abs(room.size.side2.max) - 1);
+        //  avaliableCells = Room.shrinkTo(avaliableCells, d.E, Math.abs(room.size.side1.max) - 1);
+        //
+        //  //mark(avaliableCells, 0xFF0000);
+        //
+        //  //  rooms.forEach((r) => {
+        //  //    let wastedCells = Room.expandTo(r.cells, d.N, Math.abs(room.size.side2.max));
+        //  //    wastedCells = Room.expandTo(wastedCells, d.W, Math.abs(room.size.side1.max));
+        //  //    wastedCells = Room.expandTo(wastedCells, d.S, Math.abs(room.size.side2.min) + 1);
+        //  //    wastedCells = Room.expandTo(wastedCells, d.E, Math.abs(room.size.side1.min) + 1);
+        //  //    avaliableCells = _.without.apply(_, [avaliableCells].concat(wastedCells));
+        //  //  });
+        //  //
+        //  //  avaliableCells.forEach((cell) => {
+        //  //    cell.setState('placed');
+        //  //  });
+        //  //
+        //  //  if (avaliableCells.length == 0) {
+        //  //    break;
+        //  //  }
+        //  //
+        //  //  let cell = Random.sample(avaliableCells);
+        //  //  room.generate(cell);
+        //  //
+        //  //  cells = _.without.apply(_, [cells].concat(room.cells));
+        //  //
+        //  //  cells.forEach((cell) => {
+        //  //    cell.setState();
+        //  //  });
+        //}
+        //
+        ////chunk.cells.forEach((cell) => {
+        ////  cell.setState('placed');
+        ////});
+        //
+        //rooms.forEach((r) => {
+        //  r.cells.forEach((cell) => {
+        //    //cell.state.color = cell === r.center ? 0xFF0000 : 0xFF9999;
+        //    //cell.draw();
+        //    cell.setState('placed');
+        //  });
+        //
+        //  _.values(d).forEach((d) => {
+        //    Room
+        //      //.getSide(r.cells, _.values(d))
+        //      .getSide(r.cells, d)
+        //      .forEach((cell) => {
+        //        if (cell.cells.get(d)) new Border(cell, cell.cells.get(d));
+        //        //cell.state.color = 0xFF9999;
+        //        //cell.draw();
+        //      });
+        //  })
         //});
-
-        let rooms = [];
-        for (let i = 0; i < 111; ++i) {
-          let room = new Room(this.level);
-          rooms.push(room);
-          console.log('room generated', room.size);
-          let avaliableCells = Room.shrinkTo(cells, d.N, Math.abs(room.size.side2.min));
-          avaliableCells = Room.shrinkTo(avaliableCells, d.W, Math.abs(room.size.side1.min));
-          avaliableCells = Room.shrinkTo(avaliableCells, d.S, Math.abs(room.size.side2.max) - 1);
-          avaliableCells = Room.shrinkTo(avaliableCells, d.E, Math.abs(room.size.side1.max) - 1);
-
-          rooms.forEach((r) => {
-            let wastedCells = Room.expandTo(r.cells, d.N, Math.abs(room.size.side2.max));
-            wastedCells = Room.expandTo(wastedCells, d.W, Math.abs(room.size.side1.max));
-            wastedCells = Room.expandTo(wastedCells, d.S, Math.abs(room.size.side2.min) + 1);
-            wastedCells = Room.expandTo(wastedCells, d.E, Math.abs(room.size.side1.min) + 1);
-            avaliableCells = _.without.apply(_, [avaliableCells].concat(wastedCells));
-          });
-
-          avaliableCells.forEach((cell) => {
-            cell.setState('placed');
-          });
-
-          if (avaliableCells.length == 0) {
-            break;
-          }
-
-          let cell = Random.sample(avaliableCells);
-          room.generate(cell);
-
-          cells = _.without.apply(_, [cells].concat(room.cells));
-
-          cells.forEach((cell) => {
-            cell.setState();
-          });
-        }
-
-        //chunk.cells.forEach((cell) => {
-        //  cell.setState('placed');
-        //});
-
-        rooms.forEach((r) => {
-          r.cells.forEach((cell) => {
-            //cell.state.color = cell === r.center ? 0xFF0000 : 0xFF9999;
-            //cell.draw();
-            cell.setState('placed');
-          });
-
-          _.values(d).forEach((d) => {
-            Room
-              //.getSide(r.cells, _.values(d))
-              .getSide(r.cells, d)
-              .forEach((cell) => {
-                if (cell.cells.get(d)) new Border(cell, cell.cells.get(d));
-                //cell.state.color = 0xFF9999;
-                //cell.draw();
-              });
-          })
-        });
-
-        this.level.rooms = rooms;
+        //
+        //this.level.rooms = rooms;
       })
       .then(() => {
-        let generator = new Wilson(this.game);
-        console.log(this.level.rooms)
-        let roomCells = _.reduce(this.level.rooms, (result, room) => result.concat(room.cells), []);
-        //console.log(roomCells.length, roomCells);
-        let cells = _.without.apply(_, [this.level.cells.toArray()].concat(roomCells));
-        cells.forEach((cell) => {
-          cell.state.color = 0x00FF00;
-          cell.draw();
-        });
-        return generator.start(cells);
-        //return generator.start(this.);
+        //this.level.rooms.forEach(r => r.cells.forEach(c => c.state.color = c === r.center ? 0xFF0000 : 0xFF9999));
       })
+      //.then(() => {
+      //  let generator = new Wilson(this.game);
+      //  console.log(this.level.rooms)
+      //  let roomCells = _.reduce(this.level.rooms, (result, room) => result.concat(room.cells), []);
+      //  //console.log(roomCells.length, roomCells);
+      //  let cells = _.without.apply(_, [this.level.cells.toArray()].concat(roomCells));
+      //  cells.forEach((cell) => {
+      //    cell.state.color = 0x00FF00;
+      //    cell.draw();
+      //  });
+      //  return generator.start(cells);
+      //  //return generator.start(this.);
+      //})
       .then(() => {
         console.log('generation stopped');
-      })
+      });
     //.then(() => {
     //  this.player = new Player(
     //    this.level

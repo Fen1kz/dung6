@@ -18,14 +18,22 @@ class Chunk extends Phaser.Group {
     this.Y = Y;
     this.WIDTH = 24;
     this.HEIGHT = 24;
-    this.MINX = this.X * this.WIDTH  - Math.ceil(this.WIDTH / 2);
-    this.MINY = this.Y * this.HEIGHT - Math.ceil(this.HEIGHT / 2);
-    this.MAXX = this.X * this.WIDTH  + Math.floor(this.WIDTH / 2) - 1;
-    this.MAXY = this.Y * this.HEIGHT + Math.floor(this.HEIGHT / 2) - 1;
+    this.MINX = this.X * this.WIDTH  - Math.floor(this.WIDTH / 2);
+    this.MINY = this.Y * this.HEIGHT - Math.floor(this.HEIGHT / 2);
+    this.MAXX = this.X * this.WIDTH  + Math.ceil(this.WIDTH / 2) - 1;
+    this.MAXY = this.Y * this.HEIGHT + Math.ceil(this.HEIGHT / 2) - 1;
 
     //this.anchor.setTo(0.5, 0.5);
-    this.x = this.game.c.SIZE * this.X + this.game.world.width / 2;
-    this.y = this.game.c.SIZE * this.Y + this.game.world.height / 2;
+    this.x = this.game.c.SIZE * (this.X * this.WIDTH - ((this.WIDTH / 2) + 0.5) % 1);
+    this.y = this.game.c.SIZE * (this.Y * this.HEIGHT - ((this.HEIGHT / 2) + 0.5) % 1);
+    console.log(this.x, this.y);
+
+
+    //this.width = this.game.c.SIZE * this.WIDTH;
+    //this.height = this.game.c.SIZE * this.HEIGHT;
+    //
+    //console.log(this.game.c.SIZE, this.WIDTH)
+    //console.log(this.width, this.height)
 
 //    this.graphics = this.game.add.graphics();
 //    this.addChild(this.graphics);
@@ -52,6 +60,25 @@ class Chunk extends Phaser.Group {
       add(cell.cells, Dir.E, this.cells.get(cell.X + 1, cell.Y));
       add(cell.cells, Dir.S, this.cells.get(cell.X, cell.Y + 1));
       add(cell.cells, Dir.W, this.cells.get(cell.X - 1, cell.Y));
+    });
+
+    this.setupDebug();
+  }
+
+  setupDebug () {
+    let width = this.game.c.SIZE * this.WIDTH;
+    let height = this.game.c.SIZE * this.HEIGHT;
+    this.debugGfx = this.game.make.graphics(0, 0);
+    this.debugGfx.lineStyle(5, 0x0000FF, .5);
+    this.debugGfx.drawRect(width *-.5, height *-.5, width, height);
+    this.debugGfx.endFill();
+    //this.debugGfx.x -= this.x = this.game.c.SIZE * -.5;
+    //this.debugGfx.y -= this.game.c.SIZE * -.5;
+
+    this.add(this.debugGfx);
+
+    this.game.input.keyboard.addKey(Phaser.Keyboard.C).onDown.add(() => {
+      this.debugGfx.visible = !this.debugGfx.visible;
     });
   }
 
