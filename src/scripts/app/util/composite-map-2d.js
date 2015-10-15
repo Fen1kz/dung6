@@ -1,17 +1,18 @@
 import {CompositeMap} from 'app/util/composite-map';
 
 class CompositeMap2d extends CompositeMap {
-  key(X, Y) {
-    return X + ":" + Y;
-  }
-
-  add(cell) {
-    this.$map[this.key(cell.X, cell.Y)] = cell;
+  put(X, Y, object) {
+    (typeof this.$map.get(X) === 'object'
+        ? this.$map.get(X).put(Y, object)
+        : this.$map.put(X, new CompositeMap().put(Y, object))
+    );
     return this;
   }
 
   get(X, Y) {
-    return this.$map[this.key(X, Y)];
+    return (typeof this.$map.get(X) === 'object'
+      ? this.$map.get(X).get(Y)
+      : undefined);
   }
 }
 

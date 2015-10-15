@@ -38,29 +38,29 @@ class Chunk extends Phaser.Group {
 //    this.graphics = this.game.add.graphics();
 //    this.addChild(this.graphics);
 
-    this.borders = [];
-    this.cells = new CompositeMap2d();
-
-    for (let X = this.MINX; X <= this.MAXX; ++X) {
-      for (let Y = this.MINY; Y <= this.MAXY; ++Y) {
-        let cell = new Cell(this, X, Y);
-        this.cells.add(cell);
-        this.level.cells.add(cell);
-      }
-    }
-
-    let add = (cellCells, dir, another) => {
-      if (another) {
-        cellCells.put(dir, another);
-      }
-    };
-
-    this.cells.forEach((cell) => {
-      add(cell.cells, Dir.N, this.cells.get(cell.X, cell.Y - 1));
-      add(cell.cells, Dir.E, this.cells.get(cell.X + 1, cell.Y));
-      add(cell.cells, Dir.S, this.cells.get(cell.X, cell.Y + 1));
-      add(cell.cells, Dir.W, this.cells.get(cell.X - 1, cell.Y));
-    });
+    //this.borders = [];
+    //this.cells = new CompositeMap2d();
+    //
+    //for (let X = this.MINX; X <= this.MAXX; ++X) {
+    //  for (let Y = this.MINY; Y <= this.MAXY; ++Y) {
+    //    let cell = new Cell(this, X, Y);
+    //    this.cells.add(cell);
+    //    this.level.cells.add(cell);
+    //  }
+    //}
+    //
+    //let add = (cellCells, dir, another) => {
+    //  if (another) {
+    //    cellCells.put(dir, another);
+    //  }
+    //};
+    //
+    //this.cells.forEach((cell) => {
+    //  add(cell.cells, Dir.N, this.cells.get(cell.X, cell.Y - 1));
+    //  add(cell.cells, Dir.E, this.cells.get(cell.X + 1, cell.Y));
+    //  add(cell.cells, Dir.S, this.cells.get(cell.X, cell.Y + 1));
+    //  add(cell.cells, Dir.W, this.cells.get(cell.X - 1, cell.Y));
+    //});
 
     this.setupDebug();
   }
@@ -69,7 +69,7 @@ class Chunk extends Phaser.Group {
     let width = this.game.c.SIZE * this.WIDTH;
     let height = this.game.c.SIZE * this.HEIGHT;
     this.debugGfx = this.game.make.graphics(0, 0);
-    this.debugGfx.lineStyle(5, 0x0000FF, .5);
+    this.debugGfx.lineStyle(2, 0x0000FF, .5);
     this.debugGfx.drawRect(width *-.5, height *-.5, width, height);
     this.debugGfx.endFill();
     //this.debugGfx.x -= this.x = this.game.c.SIZE * -.5;

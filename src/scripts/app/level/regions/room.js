@@ -4,11 +4,14 @@ import Promise from 'bluebird';
 import {Random} from 'app/util/random';
 import {Direction} from 'app/entities/level/directions';
 
-class Room {
-  constructor(level) {
+class Room extends Phaser.Group {
+  constructor(level, X, Y) {
+    super(level.game);
     //this.center = center;
     this.level = level;
 
+    this.X = X;
+    this.Y = Y;
     this.cells = [];
 
     this.generateSize();

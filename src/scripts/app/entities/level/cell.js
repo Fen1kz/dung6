@@ -51,7 +51,7 @@ class Cell extends Entity {
     this.addChild(this.numbers);
 
     super.draw();
-    this.graphics.lineStyle(1, 0xaaaaaa);
+    this.graphics.lineStyle(1, 0x555555);
     //this.graphics.lineStyle(2, 0xdddddd);
     this.graphics.beginFill(this.state.color);
     this.graphics.drawRect(this.game.c.SIZE * -.5, this.game.c.SIZE * -.5, this.game.c.SIZE, this.game.c.SIZE);
@@ -110,15 +110,11 @@ class Cell extends Entity {
     this.draw();
     return this;
   }
-
-  render() {
-    console.log('r');
-  }
 }
 
 let CellState = {
   undefined: {
-    color: 0xcccccc
+    color: 0xffffff
   }
   , placed: {
     color: 0xffffff

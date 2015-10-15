@@ -44,7 +44,7 @@ export default class Boot extends Phaser.State {
     this.stage.smoothed = true;
 
     this.game.c = {
-      SIZE: 20
+      SIZE: 16
       , styles: {cell: {}}
     };
     this.game.c.styles.cell.center = {

@@ -1,6 +1,6 @@
 import {Random} from 'app/util/random';
-import {Level} from 'app/objects/level';
-import {Room} from 'app/objects/room';
+import {Level} from 'app/level/level';
+import {Room} from 'app/level/room';
 import {Wilson} from 'app/objects/mazes/generators/wilson';
 import {WilsonWalls} from 'app/objects/mazes/generators/wilson-walls';
 import {Cell} from 'app/entities/level/cell';
@@ -39,6 +39,7 @@ export default class Mazes extends Phaser.State {
     this.level.show()
       .bind(this)
       .then(() => {
+        this.level.$add.room();
         //let cells = chunk.cells.toArray();
         ////let safeDistance = Math.floor(Room.config.side.max / 2);
         ////cells = Room.shrinkTo(cells, _.values(d), safeDistance);

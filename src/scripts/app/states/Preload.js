@@ -12,7 +12,7 @@ import assets from '../data/assets';
 
 // To make matters easier, I prepared a SplashScreen class, responsible for
 // displaying the decorated splash screen graphic, and the progress bar.
-import SplashScreen from '../objects/SplashScreen';
+import SplashScreen from '../data/SplashScreen';
 
 
 export default class Preload extends Phaser.State {
