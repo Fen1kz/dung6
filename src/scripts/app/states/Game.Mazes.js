@@ -1,12 +1,10 @@
 import {Random} from 'app/util/random';
 import {Level} from 'app/level/level';
-import {Room} from 'app/level/room';
-import {Wilson} from 'app/objects/mazes/generators/wilson';
-import {WilsonWalls} from 'app/objects/mazes/generators/wilson-walls';
-import {Cell} from 'app/entities/level/cell';
-import {Border} from 'app/entities/level/border';
-import {Directions as d} from 'app/entities/level/directions';
-import {Player} from 'app/entities/player';
+//import {Room} from 'app/level/room';
+//import {Cell} from 'app/entities/level/cell';
+//import {Border} from 'app/entities/level/border';
+//import {Directions as d} from 'app/entities/level/directions';
+//import {Player} from 'app/entities/player';
 
 export default class Mazes extends Phaser.State {
   preload() {
@@ -39,7 +37,49 @@ export default class Mazes extends Phaser.State {
     this.level.show()
       .bind(this)
       .then(() => {
-        this.level.$add.room();
+        //this.level.$add.room(-5, -5);
+        let rooms = _.range(80)
+        .map((i) => this.level.$add.room(Random.include(-5, 5), Random.include(-5, 5)));
+        //console.log(room.X, room.Y, room.WIDTH, room.HEIGHT);
+        //let rooms = [
+        //  this.level.$add.room(3, 4, 4, 4)
+        //  , this.level.$add.room(2, 3, 4, 4)
+        //];
+
+        this.game.input.keyboard.addKey(Phaser.Keyboard.E).onDown.add(() => {
+          rooms
+            .map((room1, i1) => {
+              rooms.map((room2, i2) => {
+                if (i1 === i2) return true;
+                let bbox1 = room1.getBBOX();
+                let bbox2 = room2.getBBOX();
+                let distX = room2.X - room1.X;
+                let distY = room2.Y - room1.Y;
+                console.log(`${bbox1.X.MIN}/${bbox1.X.MAX}:${bbox1.Y.MIN}/${bbox1.Y.MAX}`)
+                console.log(`${bbox2.X.MIN}/${bbox2.X.MAX}:${bbox2.Y.MIN}/${bbox2.Y.MAX}`)
+                console.log(bbox1.X.MIN >= bbox2.X.MAX)
+                console.log(bbox2.Y.MIN >= bbox2.Y.MAX)
+                if ((Math.abs(room1.X - room2.X) * 2 < (room1.WIDTH + room2.WIDTH)) &&
+                  (Math.abs(room1.Y - room2.Y) * 2 < (room1.HEIGHT + room2.HEIGHT))) {
+                  let PROP = (Math.abs(distX) > Math.abs(distY) ? 'X' : 'Y');
+                  let DIR = (room2[PROP] + room1[PROP] <= 0 ? -1 : +1);
+                  let room = (DIR * (room2[PROP] - room1[PROP]) < 0 ? room1 : room2);
+                  console.log(room, PROP, DIR);
+                  room.MOVE[PROP](DIR);
+                  room.debugDraw();
+                } else {
+                  console.log('dont touch')
+                }
+                console.log('---')
+
+                //if (bbox1.Y.MIN <= bbox2.Y.MAX) {
+                //
+                //}
+
+
+              });
+            });
+        });
         //let cells = chunk.cells.toArray();
         ////let safeDistance = Math.floor(Room.config.side.max / 2);
         ////cells = Room.shrinkTo(cells, _.values(d), safeDistance);

@@ -30,7 +30,7 @@ var DirectionsNumber = {
   , [1 << 1]: Directions.E
   , [1 << 2]: Directions.S
   , [1 << 3]: Directions.W
-}
+};
 
 Direction.fromNumber = function (num) {
     return DirectionsNumber[num];

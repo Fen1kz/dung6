@@ -1,20 +1,24 @@
 'use strict';
 
 import Promise from 'bluebird';
+
+import {Region} from 'app/level/region/region';
 import {Random} from 'app/util/random';
 import {Direction} from 'app/entities/level/directions';
 
-class Room extends Phaser.Group {
-  constructor(level, X, Y) {
-    super(level.game);
-    //this.center = center;
-    this.level = level;
+class Room extends Region {
+  constructor(level, X = 0, Y = 0, W, H) {
+    super(level, X, Y);
+    this.debugColor = 0xFF0000;
+    this.debugInit(Phaser.Keyboard.R);
 
-    this.X = X;
-    this.Y = Y;
     this.cells = [];
 
-    this.generateSize();
+    if (!W || !H) {
+      this.generateSize();
+    } else {
+      this.setSize(W, H);
+    }
   }
 
   getConfig() {
@@ -25,22 +29,36 @@ class Room extends Phaser.Group {
     }
   }
 
+  get MOVE() {
+    return {
+      XY: (X, Y) => {
+        this.X += X;
+        this.Y += Y;
+        this.updateCoords();
+      }
+      , X: (X) => {
+        this.X += X;
+        this.updateCoords();
+      }
+      , Y: (Y) => {
+        this.Y += Y;
+        this.updateCoords();
+      }
+    }
+  }
+
   generateSize() {
     let config = this.getConfig();
     let sizes = [];
-    let side = config.side.min;
-    for (let side1 = config.side.min; side1 <= config.side.max; ++side1) {
-      for (let side2 = config.side.min; side2 <= config.side.max; ++side2) {
-        if (!config.square || side1 * side2 >= config.square.min && side1 * side2 <= config.square.max) {
-          sizes.push({side1: {length: side1}, side2: {length: side2}});
+    for (let sideWidth = config.width.min; sideWidth <= config.width.max; ++sideWidth) {
+      for (let sideHeight = config.height.min; sideHeight <= config.height.max; ++sideHeight) {
+        if (sideWidth * sideHeight >= config.area.min && sideWidth * sideHeight <= config.area.max) {
+          sizes.push([sideWidth, sideHeight]);
         }
       }
     }
-    this.size = Random.sample(sizes);
-    this.size.side1.min = -Math.floor(this.size.side1.length / 2);
-    this.size.side1.max = Math.ceil(this.size.side1.length / 2);
-    this.size.side2.min = -Math.floor(this.size.side2.length / 2);
-    this.size.side2.max = Math.ceil(this.size.side2.length / 2);
+    let size = Random.sample(sizes);
+    this.setSize(size[0], size[1]);
   }
 
   generate(center) {
